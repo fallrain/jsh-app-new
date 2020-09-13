@@ -128,7 +128,7 @@ export default {
   data() {
     return {
       mineperson: {
-        name: '王二小',
+        name: '',
         src: require('@/assets/img/afterSale/2.png'),
         gs: '青岛赵赵王王科技有限公司'
       },
@@ -197,8 +197,17 @@ export default {
       ]
     };
   },
+  created() {
+    this.getAccountMsg();
+  },
   methods: {
-
+    async getAccountMsg() {
+      const { code, data } = await this.customerService.getAccountMsg();
+      if (code === '1') {
+        console.log(data);
+        this.mineperson.name = data.realName;
+      }
+    },
     routerto(url) {
       uni.navigateTo({
         url: `${url}`
