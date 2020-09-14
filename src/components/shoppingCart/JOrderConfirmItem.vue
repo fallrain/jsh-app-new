@@ -82,7 +82,12 @@
               <text v-else>请选择付款方</text>
             </view>
           </view>
-          <view v-if="goods.splitOrderProductList[0].isBbOrProject&&orderItem.yunCangType!=='yc'&&orderItem.yunCangType!=='ydyc'" class="jOrderConfirmItem-detail-mark-item">
+          <view v-if="goods.splitOrderProductList[0].isBbOrProject
+          &&orderItem.yunCangType!=='yc'
+          &&orderItem.yunCangType!=='ydyc'
+          &&currentPayer[goods.orderNo].payerType !=='98'
+          &&currentPayer[goods.orderNo].payerType !=='99'"
+                class="jOrderConfirmItem-detail-mark-item">
             <view class="jOrderConfirmItem-detail-mark-item-name">
               <text class="jOrderConfirmItem-detail-mark-item-name-star">*</text>备注信息
               <view class="jOrderConfirmItem-detail-mark-item-name-icon iconfont iconxia"></view>
@@ -276,10 +281,19 @@ export default {
       console.log(this.orderItem);
     },
     currentchosePayerOption(val) {
-      console.log(val);
       console.log(this.currentOrderNo);
       const currentPayer = this.payerOptions[this.currentOrderNo].find(v => v.customerCode === val[0]);
       this.$set(this.currentPayer, this.currentOrderNo, currentPayer);
+      console.log(this.currentPayer);
+      this.orderItem.splitOrderDetailList.forEach((item) => {
+        if (item.splitOrderProductList[0].isBbOrProject === true
+          && (currentPayer.payerType === '98' || currentPayer.payerType === '99')) {
+          uni.showToast({
+            title: '融资户暂不支持异地配送下单！',
+            icon: 'none'
+          });
+        }
+      });
       this.getPayerMoneyInfo();
     },
     billInfoList() {
@@ -337,7 +351,7 @@ export default {
       };
       console.log(this.orderItem);
       this.orderItem.splitOrderDetailList.forEach((item) => {
-        console.log(item)
+        console.log(item);
         const itemObj = {
           totalMoney: item.totalMoney,
           customerCode: this.currentPayer[item.orderNo].customerCode,
@@ -362,7 +376,7 @@ export default {
       this.payerPickerShow = true;
     },
     goRemarks(index, goodsInfo) {
-      const goodInfo = JSON.stringify(goodsInfo)
+      const goodInfo = JSON.stringify(goodsInfo);
       uni.navigateTo({
         url: `/pages/shoppingCart/orderConfirmRemarks?orderIndex=${this.index}&productIndex=${index}&goodInfo=${goodInfo}`
       });

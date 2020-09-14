@@ -28,7 +28,7 @@
           <view class="con2-row-left-title">{{ item.name }}</view>
           <view class="con2-color-bg"></view>
         </view>
-        <image class="con2-row-right" @click="co112(index)" :src="aaa" />
+        <image class="con2-row-right" @click="co112(index)" src="../../assets/img/afterSale/1.png" />
       </view>
       <view v-show="!item.switch && index == 1" class="con2-box2-row1">
         <view class="con2-box2-row1-left">发票号：</view>
@@ -155,14 +155,12 @@
 </template>
 
 <script>
-import bg1 from './image/1.png';
 import './css/wherebuyreturnconfirm2.scss';
 // import { uniCombox } from "@dcloudio/uni-ui";
 
 export default {
   data() {
     return {
-      aaa: bg1,
       aac: [],
       aab: [
         {

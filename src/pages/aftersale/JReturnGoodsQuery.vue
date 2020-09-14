@@ -3,11 +3,11 @@
     <view class="retgooque-top">
       <view class="retgooque-top-left">
         <view class="retgooque-top-left-title">鉴定结果</view>
-        <image class="retgooque-image1" :src="aaa" />
+        <image class="retgooque-image1" src="../../assets/img/afterSale/3.png" />
       </view>
       <view class="retgooque-top-right" @click="open1">
         <view class="retgooque-top-right-title">筛选</view>
-        <image class="retgooque-image1" :src="aaa" />
+        <image class="retgooque-image1" src="../../assets/img/afterSale/3.png" />
       </view>
     </view>
     <view class="retgooque-box">
@@ -121,16 +121,17 @@
 
 <script>
 import './css/returngoodsquery.scss';
-import bg3 from './image/3.png';
 import comment from './Comment';
 import screening from './Screening';
 import {
- uniPopup 
+  uniPopup
 } from '@dcloudio/uni-ui';
 
 export default {
   data() {
-    return { aaa: bg3 };
+    return {
+
+    };
   },
   methods: {
     open() {

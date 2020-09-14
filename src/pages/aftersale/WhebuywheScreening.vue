@@ -4,7 +4,7 @@
     <input class="WheBuyWheScr-input" />
     <view class="WheBuyWheScr-allbox">
       <view class="WheBuyWheScr-row2">产品组</view>
-      <image class="WheBuyWheScr-img" :src="aaa" />
+      <image class="WheBuyWheScr-img" src="../../assets/img/afterSale/3.png" />
     </view>
     <view class="WheBuyWheScr-box" v-for="(item, index) in a2" :key="index">
       <view
@@ -46,12 +46,10 @@
 </template>
 
 <script>
-import bg4 from './image/3.png';
 
 export default {
   data() {
     return {
-      aaa: bg4,
       a1: ['全部', '伞下店', '非伞下店'],
       a2: [
         ['冰箱', '洗衣机', '热水器'],

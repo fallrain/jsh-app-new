@@ -42,7 +42,7 @@
         <view class="retdet-watlin-left">已抢单</view>
         <view class="retdet-watlin-center">
           <view class="retdet-watlin-img">
-            <image :src="aaa" />
+            <image src="../../assets/img/afterSale/complate.png" />
           </view>
           <view class="retdet-watlin-line"></view>
         </view>
@@ -59,7 +59,7 @@
         <view class="retdet-watlin-left2">已完成</view>
         <view class="retdet-watlin-center">
           <view class="retdet-watlin-img">
-            <image :src="aab" />
+            <image src="../../assets/img/afterSale/complatenot.png" />
           </view>
           <view class="retdet-watlin-line"></view>
         </view>
@@ -74,7 +74,7 @@
         <view class="retdet-watlin-left2">已完成</view>
         <view class="retdet-watlin-center">
           <view class="retdet-watlin-img">
-            <image :src="aab" />
+            <image src="../../assets/img/afterSale/complatenot.png" />
           </view>
           <!-- <view class="retdet-watlin-retdet-line"></view> -->
         </view>
@@ -91,14 +91,10 @@
 
 <script>
 import './css/returndetails.scss';
-import img1 from './image/complate.png';
-import img2 from './image/complatenot.png';
 
 export default {
   data() {
     return {
-      aaa: img1,
-      aab: img2,
       indexx: 3
     };
   }

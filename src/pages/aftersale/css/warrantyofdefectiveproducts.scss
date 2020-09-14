@@ -1,3 +1,6 @@
+.uni-input-placeholder {
+  color: #ccc;
+}
 .appdefpro-bg {
   height: 1496px;
   width: 750px;
@@ -27,11 +30,22 @@
   font-size: 34px;
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
-  color: rgba(51, 51, 51, 1);
+  color: #000;
   line-height: 48px;
 }
 .appdefpro-title {
-  color: rgba(204, 204, 204, 1);
+  margin: 24px 0 24px 24px;
+  width: 60%;
+  height: 48px;
+  font-size: 34px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  color: #000;
+  line-height: 48px;
+}
+.appdefpro-icon {
+  font-size: 30px !important;
+  margin: auto 15px;
 }
 .appdefpro-row-row {
   width: 24px;
@@ -71,7 +85,7 @@
   font-size: 34px;
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
-  color: rgba(204, 204, 204, 1);
+  color: #000;
   line-height: 48px;
 }
 .appdefpro-row2-bottom-number {
@@ -82,7 +96,7 @@
   font-size: 34px;
   font-family: PingFangSC-Regular, PingFang SC;
   font-weight: 400;
-  color: rgba(153, 153, 153, 1);
+  color: #ccc;
   line-height: 48px;
 }
 .appdefpro-botton-box {
@@ -123,4 +137,10 @@
   font-weight: 400;
   color: rgba(153, 153, 153, 1);
   line-height: 48px;
+}
+.mla {
+  color: #000;
+}
+appdefpro-placeholder {
+  color: #000;
 }

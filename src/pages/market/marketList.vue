@@ -25,7 +25,6 @@
           @goOrder ="goOrder"
           @getNum="getNum"
         ></j-activity-item>
-        <!--<view v-if="list.length === 0"F class="">暂无数据</view>-->
       </view>
     </mescroll-body>
     <j-drawer

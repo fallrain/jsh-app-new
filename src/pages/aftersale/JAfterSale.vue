@@ -17,7 +17,7 @@
         <view class="title-one">待办</view>
         <view class="Cumulative"></view>
         <view class="title-two">全部待办</view>
-        <image class="title-twor" :src="img1" />
+        <image class="title-twor" src="../../assets/img/afterSale/right.png" />
       </view>
 
       <view class="person-information-bottom">
@@ -122,26 +122,14 @@
 
 <script>
 import './css/aftersale.scss';
-import test from './image/test.png';
-import bg2 from './image/2.png';
-import book from './image/book.png';
-import box from './image/box.png';
-import calendar from './image/calendar.png';
-import car from './image/car.png';
-import function1 from './image/function.png';
-import info from './image/info.png';
-import local from './image/local.png';
-import search from './image/search.png';
-import img1 from './image/right.png';
 
 export default {
   name: 'aftersale',
   data() {
     return {
-      img1,
       mineperson: {
-        name: '王二小',
-        src: bg2,
+        name: '',
+        src: require('@/assets/img/afterSale/2.png'),
         gs: '青岛赵赵王王科技有限公司'
       },
       bgData: [1, 2, 3, 4, 5, 6, 7],
@@ -149,19 +137,19 @@ export default {
         {
           id: 1,
           name: '不良品保修',
-          src: test,
+          src: require('@/assets/img/afterSale/test.png'),
           url: '/pages/aftersale/JWarrantyOfDefectiveProducts'
         },
         {
           id: 2,
           name: '理货商确认',
-          src: info,
+          src: require('@/assets/img/afterSale/info.png'),
           url: '/pages/aftersale/JTallyConfirmed'
         },
         {
           id: 3,
           name: '退货进度查询',
-          src: search,
+          src: require('@/assets/img/afterSale/search.png'),
           url: '/pages/aftersale/JReturnGoodsQuery'
         }
       ],
@@ -169,13 +157,13 @@ export default {
         {
           id: 6,
           name: '哪买哪退确认',
-          src: function1,
+          src: require('@/assets/img/afterSale/function.png'),
           url: '/pages/aftersale/JWhereBuyReturnConfirm'
         },
         {
           id: 7,
           name: '哪买哪退查询',
-          src: book,
+          src: require('@/assets/img/afterSale/book.png'),
           url: '/pages/aftersale/JWhereBuyReturn'
         }
       ],
@@ -183,13 +171,13 @@ export default {
         {
           id: 8,
           name: '鉴定超期',
-          src: calendar,
+          src: require('@/assets/img/afterSale/calendar.png'),
           url: '/pages/aftersale/JExtendedIdentification'
         },
         {
           id: 9,
           name: '返厂超期',
-          src: box,
+          src: require('@/assets/img/afterSale/box.png'),
           url: '/pages/aftersale/JOverdueReturn'
         }
       ],
@@ -197,19 +185,29 @@ export default {
         {
           id: 10,
           name: '网点新建',
-          src: car,
+          src: require('@/assets/img/afterSale/car.png'),
           url: '/pages/aftersale/JNewBranch'
         },
         {
           id: 11,
           name: '新建网点进度',
-          src: local,
+          src: require('@/assets/img/afterSale/local.png'),
           url: '/pages/aftersale/JProgressNewOutlets'
         }
       ]
     };
   },
+  created() {
+    this.getAccountMsg();
+  },
   methods: {
+    async getAccountMsg() {
+      const { code, data } = await this.customerService.getAccountMsg();
+      if (code === '1') {
+        console.log(data);
+        this.mineperson.name = data.realName;
+      }
+    },
     routerto(url) {
       uni.navigateTo({
         url: `${url}`

@@ -130,7 +130,7 @@
       indicatorStyle=""
       :addressData="addressData"
       :show.sync="addressPickerShow"
-      v-model="currentAdds"
+      v-model="resultAdds"
       @changeData="changeData"
       @sureVal="sureVal"
     ></j-address-picker>
@@ -222,6 +222,16 @@ export default {
     console.log(this.goodInfo);
     this.form.orderIndex = option.orderIndex;
     this.form.productIndex = option.productIndex;
+    if (this.goodInfo.isCollectionAddress === '2') {
+      this.form.isCollectionAddress = true;
+    } else {
+      this.form.isCollectionAddress = false;
+    }
+    if (this.goodInfo.deliveryYd === '1') {
+      this.form.deliveryYd = true;
+    } else {
+      this.form.deliveryYd = false;
+    }
     this.initAddress();
     this.getAddListZFYD();
   },
@@ -373,10 +383,11 @@ export default {
         area: this.addressData.area[this.resultAdds[2]]
       };
       console.log(this.currentAdd);
-      this.form.province = this.choosedAdd.province.laname;
-      this.form.city = this.choosedAdd.city.laname;
-      this.form.area = this.choosedAdd.area.laname;
-      this.form.areaCode = this.choosedAdd.area.lacountyid;
+      console.log(this.resultAdds);
+      this.form.province = this.currentAdd.province.laname;
+      this.form.city = this.currentAdd.city.laname;
+      this.form.area = this.currentAdd.area.laname;
+      this.form.areaCode = this.currentAdd.area.lacountyid;
       this.form.addressName = `${this.currentAdd.province.laname}${this.currentAdd.city.laname}${this.currentAdd.area.laname}`;
     },
     // 显示地址选择
@@ -431,6 +442,22 @@ export default {
       uni.navigateBack();
     },
     radioChange(e) {
+      this.form = {
+        orderIndex: '',
+        productIndex: '',
+        userName: '',
+        iphoneNo: '',
+        idcardNo: '',
+        province: '',
+        city: '',
+        area: '',
+        areaCode: '',
+        address: '',
+        addressName: '',
+        isCollectionAddress: false,
+        deliveryYd: false,
+        jdWarehouseId: ''
+      };
       if (e.target.value === 'jdyd') {
         this.form.jdWarehouseId = 1;
         this.getAddListJDYD();

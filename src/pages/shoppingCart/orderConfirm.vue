@@ -286,7 +286,9 @@ export default {
         // 如果有款先权限，且没有选中款先 金额为0
         this.dataInfo.composeProductList.forEach((item) => {
           const product = item.splitOrderDetailList[0].splitOrderProductList[0];
-          if (product.kuanXian === '1' && product.isCheckKuanXian === '0') {
+          if ((product.kuanXian === '1' && product.isCheckKuanXian === '0')
+            || product.isCheckCreditModel === '1'
+          ) {
             item.totalPreState = true;
           } else {
             item.totalPreState = false;
@@ -447,11 +449,12 @@ export default {
     },
     // 提交订单
     async submitOrder() {
+      debugger
       console.log(this.payerMoneyList);
       let state = true;
       this.payerMoneyList.forEach((item) => {
         if (Number(item.balance) < Number(item.totalMoney)
-          || Number(item.balance) < Number(item.totalMoney)
+          && Number(item.bookbalance) < Number(item.totalMoney)
         ) {
           uni.showToast({
             title: '余额不足请先充值',

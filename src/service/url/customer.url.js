@@ -6,6 +6,10 @@ const urls = {
   addressesList(status) {
     return `/customers/auxiliary/addresses?status=${status}`;
   },
+  // 售后付款方
+  afterSalePayer(status) {
+    return `/customers/auxiliary/payer?status=${status}`;
+  },
   // 收藏的商品的数据
   queryCustomerInterestProductByAccount: '/customer/queryCustomerInterestProductByAccount',
   // 添加收藏
@@ -33,7 +37,8 @@ const urls = {
   changeDefaultSendTo(sendToCode) {
     /* 切换默认送达方信息 */
     return `/customers/auxiliary/relations/${sendToCode}/default`;
-  }
+  },
+  getAccountMsg: '/api/returnGoodApply/getAccountMsg'
 };
 util.addPrefix(baseURL, urls);
 export default urls;

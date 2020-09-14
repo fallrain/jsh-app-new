@@ -93,7 +93,7 @@
       </view>
       <view class="ovedueretdel-box1-row">
         <view class="box-size">
-          <image class="ove-image" :src="aa1" />
+          <image class="ove-image" src="../../assets/img/afterSale/complate.png" />
           <view class="ovedueretdel-row1-right3"
             >已经入库完成【哈尔滨家电有限公司】【负提单号：4604886370】</view
           >
@@ -105,12 +105,10 @@
 
 <script>
 import './css/overduereturndetails.scss';
-import bg1 from './image/complate.png';
 
 export default {
   data() {
     return {
-      aa1: bg1
     };
   }
 };

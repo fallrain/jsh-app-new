@@ -13,7 +13,22 @@
         </j-tab>
         </view>
       </view>
-      <order-list-item v-for="(iten,index) in orderListInfo" :key="index" :info="iten" :index="index" @goDetail="goDetail"></order-list-item>
+      <mescroll-body
+        ref="mescrollRef"
+        @init="mescrollInit"
+        :up="jMescrollUpOptions"
+        :down="jMescrollDownOptions"
+        @down="jMescrollDownCallback"
+        @up="upCallback"
+      >
+        <order-list-item
+          v-for="(iten,index) in orderListInfo"
+          :key="index"
+          :info="iten"
+          :index="index"
+          @goDetail="goDetail">
+        </order-list-item>
+      </mescroll-body>
     </view>
     <j-drawer
       :show.sync="isShowGoodsFilterDrawer"
@@ -555,6 +570,11 @@ export default {
     ...mapMutations([
       ORDER.UPDATE_ORDER
     ]),
+    async upCallback(pages) {
+      /* 上推加载 */
+      const scrollView = await this.getActivityList(pages);
+      this.mescroll.endBySize(scrollView.pageSize, scrollView.total);
+    },
     filterConfirm() {
       this.orderList(this.tabs[this.sexID].id2, this.pageNo);
       this.tabs.forEach((each) => {

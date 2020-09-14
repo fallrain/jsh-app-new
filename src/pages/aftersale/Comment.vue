@@ -56,8 +56,8 @@
 </template>
 
 <script>
-import bg1 from './image/1.png';
-import bg4 from './image/3.png';
+import bg1 from '../../assets/img/afterSale/1.png';
+import bg4 from '../../assets/img/afterSale/3.png';
 
 export default {
   data() {

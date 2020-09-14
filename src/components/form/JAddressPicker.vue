@@ -7,7 +7,8 @@
       :scroll-y="true"
     >
       <view @tap="sureVal" class="picker-view-sure">确定</view>
-      <picker-view class="picker-view-style" :indicator-style="indicatorStyle" @change="bindChange">
+      <picker-view class="picker-view-style" :value="value"
+                   :indicator-style="indicatorStyle" @change="bindChange">
 
         <picker-view-column>
           <view class="item" v-for="(item,index) in addressData.province" :key="index">
@@ -46,6 +47,9 @@ export default {
     addressData: {
       type: Object,
       default: () => {}
+    },
+    value: {
+      type: Array
     }
   },
   watch: {

@@ -2,38 +2,48 @@
   <view class="appdefpro-bg">
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">商品联系人</view>
-      <input class="appdefpro-row-right" placeholder="请输入商品联系人" />
+      <input
+        class="appdefpro-row-right mla"
+        placeholder="请输入商品联系人"
+        placeholderClass="appdefpro-placeholder"
+        v-model="form.name"
+      />
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">联系电话</view>
-      <input class="appdefpro-row-right" placeholder="请输入联系电话" />
+      <input class="appdefpro-row-right mla" placeholder="请输入联系电话" v-model="form.phone"/>
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">机器编码</view>
-      <input class="appdefpro-row-right" placeholder="请输入机器编码" />
+      <input
+        class="appdefpro-row-right"
+        placeholderClass="appdefpro-placeholder"
+         placeholder="请输入机器编码"
+         v-model="form.code"
+      />
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">产品型号</view>
       <input
         class="appdefpro-row-right"
-        placeholder-class="appdefpro-title"
         placeholder="请输入产品型号"
+        disabled
       />
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">付款方</view>
-      <view class="appdefpro-row-right">
-        <view class="appdefpro-title">请输入付款方</view>
-      </view>
+      <input class="appdefpro-title" placeholder="请输入付款方" />
+      <i class="appdefpro-icon iconfont iconyou"></i>
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">明细地址</view>
-      <input class="appdefpro-row-right" placeholder="请输入明细地址" />
+      <input class="appdefpro-title" placeholder="请输入明细地址" />
+      <i class="appdefpro-icon iconfont iconyou"></i>
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row2">
@@ -59,21 +69,82 @@
 
 <script>
 import './css/warrantyofdefectiveproducts.scss';
+import { USER } from '@/store/mutationsTypes';
 
 export default {
   data() {
     return {
       value: [0],
       years: ['aa', 'bbb', 'cc', 'ccdd', 'eee'],
-      textnum: 12
+      textnum: 12,
+      //配送地址列表
+      addressesList: [],
+      deliveryAddressList: {},
+      allPayer: [],
+      form: {
+        name: '',
+        phone: '',
+        code: '',
+        address: '',
+        payer: ''
+      },
+
     };
+  },
+  created() {
+    this.getAccountMsg();
   },
   methods: {
     switchchange() {
       this.$refs.popup.open();
+    },
+    async getAccountMsg() {
+      const { code, data } = await this.customerService.getAccountMsg();
+      if (code === '1') {
+        console.log(data);
+        this.form.name = data.realName;
+        this.form.phone = data.phone;
+      }
+    },
+    async getDeliveryAddress() {
+      /* 获取配送地址 */
+      await this.customerService.addressesList(1).then(({ code, data }) => {
+        if (code === '1') {
+          this.addressesList = data;
+          // console.log(3333333333333333333333333333333);
+          // console.log(data);
+          // // 配送地址列表
+          // this.deliveryAddressList = data.map(v => ({
+          //   id: v.customerCode,
+          //   name: `(${v.customerCode})${v.addressName}`,
+          //   tradeCode: v.tradeCode
+          // }));
+          // console.log(this.deliveryAddressList);
+          // // 当前配送地址修改(选出默认地址)
+          // const defaultIndex = data.findIndex(v => v.defaultFlag === 1);
+          // console.log(defaultIndex);
+          // if (defaultIndex > -1) {
+          //   console.log(data[defaultIndex]);
+          //   const curChoseDeliveryAddress = data[defaultIndex];
+          //   curChoseDeliveryAddress.name = `${curChoseDeliveryAddress.customerCode}${curChoseDeliveryAddress.addressName}`;
+          //   console.log(curChoseDeliveryAddress);
+          //   // 更新默认送达方store
+          //   this[USER.UPDATE_DEFAULT_SEND_TO](curChoseDeliveryAddress);
+          //   this.deliveryAddressList[defaultIndex].checked = true;
+          //   this.curChoseDeliveryAddress = curChoseDeliveryAddress;
+          // }
+        }
+      });
+    },
+    //  售后付款方列表
+    async getAfterSalePayer() {
+      await this.customerService.getcustomersList(1).then(({ code, data }) => {
+        if (code === '1') {
+
+        }
+      });
     }
   },
-  components: {}
 };
 </script>
 

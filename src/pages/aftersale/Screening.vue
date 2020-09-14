@@ -10,7 +10,7 @@
     </view>
     <view class="scr-allbox">
       <view class="scr-row3">产品组</view>
-      <image class="scr-img" :src="aaa" />
+      <image class="scr-img" src="../../assets/img/afterSale/1.png" />
     </view>
     <view class="scr-box" v-for="(item, index) in a2" :key="index">
       <view class="scr-tag" v-for="(item2, index) in item" :key="index">
@@ -45,15 +45,13 @@
 </template>
 
 <script>
-import bg4 from './image/1.png';
 import {
- uniCalendar 
+ uniCalendar
 } from '@dcloudio/uni-ui';
 
 export default {
   data() {
     return {
-      aaa: bg4,
       a1: ['全部', '伞下店', '非伞下店'],
       a2: [
         ['冰箱', '洗衣机', '热水器'],

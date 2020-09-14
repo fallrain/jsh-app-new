@@ -45,8 +45,15 @@ export default {
     return {
       name: '',
       val: '',
-      history: []
+      history: [],
+      allMendli: {}
     };
+  },
+  onLoad(option) {
+    const aaa = option.name;
+    console.log(aaa);
+    this.allMendli = JSON.parse(aaa);
+    console.log(this.allMendli);
   },
   created() {
     console.log(localStorage.getItem('history'));

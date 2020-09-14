@@ -381,7 +381,9 @@ export default {
       ],
       // 首页推荐轮播
       mend: [],
-      mendli: ''
+      mendli: '',
+      //搜索框轮播数据
+      allMendli: {}
       // tabBarList: [
       //   {
       //     id: 1,
@@ -524,12 +526,24 @@ export default {
         url: `/pages/index/service?url=${url}`
       });
     },
+    // 历史记录
     confirm() {
       console.log(this.name);
       // this.mescroll.resetUpScroll(true);
-      uni.navigateTo({
-        url: '/pages/index/historical'
-      });
+      console.log(this.mendli);
+      if (!this.name) {
+        this.allMendli.forEach(item => {
+
+        })
+        this.allMendli = JSON.stringify(this.allMendli);
+        uni.navigateTo({
+          url: `/pages/index/historical?name=${this.allMendli}`
+        });
+      } else {
+        uni.navigateTo({
+          url: '/pages/index/historical'
+        });
+      }
     },
     async getShow() {
       const params = {
@@ -547,7 +561,8 @@ export default {
         params
       });
       if (code === '10000') {
-        console.log(data.records);
+        this.allMendli = data;
+        console.log(data);
         let word = '';
         data.records.forEach((item) => {
           word = item.recoWord;

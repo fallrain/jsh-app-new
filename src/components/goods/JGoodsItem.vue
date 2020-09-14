@@ -7,7 +7,7 @@
     >
     </view>
     <view
-      :class="['jGoodsItem-cnt-like iconfont',goods.$favorite ? 'iconicon3':'iconshoucang1']"
+      class="jGoodsItem-cnt-like"
       @tap="toggleFollow"
     ></view>
     <view

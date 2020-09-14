@@ -211,7 +211,8 @@ export default {
       goodsHight: 0,
       specsHight: 0,
       detailsHight: 0,
-      flash: {}
+      flash: {},
+      addressInfo: ''
     };
   },
   onPageScroll() {
@@ -231,6 +232,8 @@ export default {
     console.log(options.productCode);
   },
   created() {
+    this.addressInfo = this.defaultSendTo;
+    this.addressInfo.id = this.defaultSendTo.customerCode;
     (async () => {
       await this.getAllProductActivity(); // 抢单  反向定制数据
     })();
@@ -240,6 +243,7 @@ export default {
     this.productQueryInter();// 产品是否关注
     this.productStock();// 获取数量页面的库存字段
     this.getDeliveryAddress();// 获取配送地址列表
+
   },
   methods: {
     ...mapMutations([
@@ -252,7 +256,7 @@ export default {
       const { code, data } = await this.productDetailService.productDetail({
         code: this.productCode,
         codeSale: this.userInf.customerCode,
-        codeSend: this.defaultSendTo.customerCode
+        codeSend: this.addressInfo.id
       });
       if (code === '1') {
         this.productNum = 1;
@@ -483,7 +487,7 @@ export default {
     async getAllProductActivity() {
       const { code, data } = await this.activityService.allProductActivity({
         customerCode: this.userInf.customerCode,
-        sendtoCode: this.defaultSendTo.customerCode,
+        sendtoCode: this.addressInfo.id,
         productCode: this.productCode
       });
       if (code === '1') {
@@ -545,7 +549,7 @@ export default {
       }
     },
     async getHostLost() {
-      const { code, data } = await this.productDetailService.productHostList(this.userInf.customerCode, this.defaultSendTo.customerCode);
+      const { code, data } = await this.productDetailService.productHostList(this.userInf.customerCode, this.addressInfo.id);
       if (code === '1') {
         this.hostList = data;
         this.hostList.forEach((item) => {
@@ -568,7 +572,7 @@ export default {
       }
     },
     async addGuan() {
-      const { code } = await this.productDetailService.productAddInter(this.userInf.customerCode, this.defaultSendTo.customerCode, this.productCode);
+      const { code } = await this.productDetailService.productAddInter(this.userInf.customerCode, this.addressInfo.id, this.productCode);
       if (code === '200') {
         this.ISGUANZHU = true;
       }
@@ -583,7 +587,7 @@ export default {
       const { code, data } = await this.productDetailService.productStock({
         productCodes: [this.productCode],
         saletoCode: this.userInf.customerCode,
-        sendtoCode: this.defaultSendTo.customerCode
+        sendtoCode: this.addressInfo.id
       });
       if (code === '1') {
         this.stock = data;
@@ -631,9 +635,11 @@ export default {
           }));
           console.log(this.deliveryAddressList);
           this.ShipInfo = `(${this.defaultSendTo.customerCode})${this.defaultSendTo.customerName}`;
+          console.log(this.addressInfo);
           this.deliveryAddressList.forEach((item) => {
             if (this.ShipInfo.indexOf(item.id) !== -1) {
               item.checked = true;
+              this.addressInfo = item;
             }
           });
           // // 当前配送地址修改
@@ -663,8 +669,19 @@ export default {
     },
     checkedShip(list, e) { // 选择的地址
       this.ShipInfo = this.deliveryAddressList[e].name;
+      this.addressInfo = this.deliveryAddressList[e];
+      console.log(this.deliveryAddressList[e]);
       this.deliveryAddressList = list;
+
+      (async () => {
+        await this.getAllProductActivity(); // 抢单  反向定制数据
+      })();
+      this.productStock();// 获取数量页面的库存字段
+      this.getAllProductActivity();
       this.getProductDetail();// 获取产品详情
+      this.getHostLost();// 获取热门推荐列表
+      this.productQueryInter();// 产品是否关注
+
     },
     checkCut(e) {
       this.toView = e;
@@ -740,7 +757,7 @@ export default {
         productCode: this.productCode, // 产品编码
         productList: product, // 产品编码
         saletoCode: this.userInf.customerCode, // 售达方编码,
-        sendtoCode: this.defaultSendTo.customerCode, // 送达方编码
+        sendtoCode: this.addressInfo.id, // 送达方编码
       });
       if (code === '1') {
         this.getShoppingCartList();
