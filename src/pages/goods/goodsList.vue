@@ -10,7 +10,8 @@
           type="button"
           class="goodsList-search-tab-btn ml22"
           @tap="silentReSearch"
-        >搜索
+        >
+          搜索
         </button>
       </view>
       <j-head-tab
@@ -32,7 +33,7 @@
     >
       <view class="goodsList-items-wrap" v-if="list.length !== 0">
         <j-goods-item
-          v-for="(item,index) in list"
+          v-for="(item, index) in list"
           :key="item.productCode"
           :goods="item"
           :index="index"
@@ -44,17 +45,17 @@
           @addCartSuccess="addCartSuccess"
         ></j-goods-item>
       </view>
-<!--      <Exception v-else>-->
-<!--        <slot name="ExcPagTitle2"></slot>-->
-<!--      </Exception>-->
+      <!--      <Exception v-else>-->
+      <!--        <slot name="ExcPagTitle2"></slot>-->
+      <!--      </Exception>-->
       <view v-else>
         <image
           src="../../assets/img/exception/error-none.png"
-          style="width:120px; height:120px;margin:28% 35% 5% 38%;"
+          style="width:260px; height:170px;margin-top:28%;margin-bottom:5%;left:50%;transform:translate(-50%,0)"
         />
         <view class="else-title">
           <view class="else-title-l">非常抱歉</view>
-          <text class="else-title-x">没有找到相关的宝贝</text>
+          <view class="else-title-x">没有找到相关的宝贝</view>
         </view>
       </view>
     </mescroll-body>
@@ -66,27 +67,28 @@
     >
       <template>
         <j-drawer-filter-item
-          v-for="(item,index) in filterList"
+          v-for="(item, index) in filterList"
           :key="index"
           :filterItem="item"
           :index="index"
           @change="filterListChange"
         ></j-drawer-filter-item>
         <view class="goodsList-drawer-filter-head-ads-wrap">
-          <view
-            class="goodsList-drawer-filter-head"
-            @tap="showDeliveryAddress"
-          >
+          <view class="goodsList-drawer-filter-head" @tap="showDeliveryAddress">
             <view>
               <text>配送至</text>
             </view>
-            <i class="iconfont iconyou goodsList-drawer-filter-head-icon-right"></i>
+            <i
+              class="iconfont iconyou goodsList-drawer-filter-head-icon-right"
+            ></i>
           </view>
           <view
             @tap="showDeliveryAddress"
             class="goodsList-drawer-filter-head-ads"
           >
-            ({{curChoseDeliveryAddress.customerCode}}){{curChoseDeliveryAddress.address}}
+            ({{ curChoseDeliveryAddress.customerCode }}){{
+              curChoseDeliveryAddress.address
+            }}
           </view>
         </view>
         <view class="goodsList-drawer-filter-head-ads-wrap">
@@ -101,14 +103,14 @@
               type="number"
               placeholder="最低价格"
               v-model="filterForm.lowPrice"
-            >
+            />
             <view class="goodsList-drawer-filter-price-line"></view>
             <input
               class="goodsList-drawer-filter-price-ipt"
               type="number"
               placeholder="最高价格"
               v-model="filterForm.highPrice"
-            >
+            />
           </view>
         </view>
       </template>
@@ -116,7 +118,7 @@
     <j-choose-delivery-address
       :show.sync="isShowAddressDrawer"
       :list="deliveryAddressList"
-      :activeItemName="'item'+curChoseDeliveryAddress.customerCode"
+      :activeItemName="'item' + curChoseDeliveryAddress.customerCode"
       @change="deliveryAddressListChange"
     ></j-choose-delivery-address>
   </view>
@@ -134,26 +136,18 @@ import mescrollMixin from '@/components/plugin/mescroll-uni/mescroll-mixins';
 import selfMescrollMixin from '@/mixins/mescroll.mixin';
 import './css/goodsList.scss';
 import {
-  getGoodsTag,
-  getGoodsType,
-  getStockType
+ getGoodsTag, getGoodsType, getStockType 
 } from '@/lib/dataDictionary';
 import {
-  mapGetters,
-  mapMutations
+ mapGetters, mapMutations 
 } from 'vuex';
 import {
-  USER,
-  COMMODITY,
-  GOODS_LIST
+ USER, COMMODITY, GOODS_LIST 
 } from '../../store/mutationsTypes';
 
 export default {
   name: 'goodsList',
-  mixins: [
-    mescrollMixin,
-    selfMescrollMixin
-  ],
+  mixins: [mescrollMixin, selfMescrollMixin],
   components: {
     JDrawerFilterItem,
     JDrawer,
@@ -161,8 +155,7 @@ export default {
     JChooseDeliveryAddress,
     JHeadTab,
     JGoodsItem,
-    MescrollBody,
-
+    MescrollBody
   },
   data() {
     return {
@@ -191,10 +184,7 @@ export default {
         {
           id: 'price',
           name: '价格',
-          icon: [
-            'iconpaixujiantoushang',
-            'iconpaixujiantouxia'
-          ],
+          icon: ['iconpaixujiantoushang', 'iconpaixujiantouxia'],
           iconClass: '',
           active: false,
           condition: {
@@ -204,9 +194,7 @@ export default {
         },
         {
           name: '筛选',
-          icon: [
-            'iconshaixuan'
-          ],
+          icon: ['iconshaixuan'],
           handler: 'showFilter',
           noSearch: true,
           noActive: true,
@@ -257,7 +245,7 @@ export default {
       // 上一组搜索对象数据
       preSearchCondition: {},
       //  当前选中的tab
-      navigate: [],
+      navigate: []
     };
   },
   onLoad(options) {
@@ -276,7 +264,7 @@ export default {
       isSpecialOffer,
       isProject,
       isSample,
-      isScf,
+      isScf
     } = options;
     this.tabConditions = {
       categoryCode,
@@ -294,7 +282,7 @@ export default {
       isSpecialOffer,
       isProject,
       isSample,
-      isScf,
+      isScf
     };
   },
   created() {
@@ -304,13 +292,13 @@ export default {
     ...mapGetters({
       userInf: USER.GET_SALE,
       defaultSendToInf: USER.GET_DEFAULT_SEND_TO,
-      catalogList: COMMODITY.GET_CATALOG_LIST,
-    }),
+      catalogList: COMMODITY.GET_CATALOG_LIST
+    })
   },
   methods: {
     ...mapMutations([
       USER.UPDATE_DEFAULT_SEND_TO,
-      GOODS_LIST.UPDATE_IS_CART_UPDATE,
+      GOODS_LIST.UPDATE_IS_CART_UPDATE
     ]),
     getPageInf() {
       this.getSaleInfo();
@@ -338,15 +326,15 @@ export default {
         pageNum: pages.num,
         pageSize: pages.size,
         customerCode: this.userInf.customerCode,
-        sendTo: this.defaultSendToInf.customerCode,
+        sendTo: this.defaultSendToInf.customerCode
       };
-        // tab条件
+      // tab条件
       const tab = this.tabs.find(v => v.active);
       // 其他条件
       const filtersMap = {
         name: this.filterForm.name && this.filterForm.name.trim()
       };
-        // 右侧筛选栏搜索数据
+      // 右侧筛选栏搜索数据
       this.filterList.forEach((item) => {
         item.data.forEach((v) => {
           if (v.isChecked) {
@@ -355,10 +343,7 @@ export default {
         });
       });
       // 最高价格，最低价格
-      const {
-        lowPrice,
-        highPrice
-      } = this.filterForm;
+      const { lowPrice, highPrice } = this.filterForm;
       if (lowPrice) {
         filtersMap.lowPrice = lowPrice * 1;
       }
@@ -366,8 +351,15 @@ export default {
         filtersMap.highPrice = highPrice * 1;
       }
       // 反转大小
-      if (lowPrice !== '' && highPrice !== '' && filtersMap.highPrice < filtersMap.lowPrice) {
-        [filtersMap.lowPrice, filtersMap.highPrice] = [filtersMap.highPrice, filtersMap.lowPrice];
+      if (
+        lowPrice !== ''
+        && highPrice !== ''
+        && filtersMap.highPrice < filtersMap.lowPrice
+      ) {
+        [filtersMap.lowPrice, filtersMap.highPrice] = [
+          filtersMap.highPrice,
+          filtersMap.lowPrice
+        ];
         this.filterForm.lowPrice = filtersMap.lowPrice;
         this.filterForm.highPrice = filtersMap.highPrice;
       }
@@ -400,7 +392,9 @@ export default {
     },
     genFilterDataOfStock(categoryCode) {
       /* 组合有货商品，并选中 */
-      const catalog = this.catalogList.find(v => v.categoryCode.substring(0, 3) === categoryCode.substring(0, 3));
+      const catalog = this.catalogList.find(
+        v => v.categoryCode.substring(0, 3) === categoryCode.substring(0, 3)
+      );
       if (catalog) {
         const data = catalog.stockTypes.map(v => ({
           // 传向接口的key name
@@ -422,7 +416,7 @@ export default {
         }
         // 修改有货商品
         this.filterList[2].data = data;
-        console.log(this.filterList)
+        console.log(this.filterList);
       }
     },
     async getGoodsList(pages) {
@@ -467,17 +461,19 @@ export default {
         const priceArgsObj = {
           productCodes,
           saletoCode: userInf.customerCode,
-          sendtoCode: defaultSendToInf.customerCode,
+          sendtoCode: defaultSendToInf.customerCode
         };
-          // 获取价格
+        // 获取价格
         const getAllPrice = this.commodityService.getAllPrice(priceArgsObj);
         // 获取库存
         const getStock = this.commodityService.getStock(priceArgsObj);
         // 获取收藏
-        const getProductQueryInter = this.productDetailService.productQueryInter({
-          productCodes,
-          account: userInf.customerCode
-        });
+        const getProductQueryInter = this.productDetailService.productQueryInter(
+          {
+            productCodes,
+            account: userInf.customerCode
+          }
+        );
         getAllPrice.then((allPriceRes) => {
           if (allPriceRes.code === '1') {
             // 添加价格
@@ -512,7 +508,9 @@ export default {
             // 添加点赞
             const productQueryInterData = productQueryInterRes.data;
             curList.forEach((v) => {
-              v.$favorite = !!productQueryInterData.find(productCode => v.productCode === productCode);
+              v.$favorite = !!productQueryInterData.find(
+                productCode => v.productCode === productCode
+              );
             });
           }
         });
@@ -538,7 +536,7 @@ export default {
         // tab为价格的时候，降序升序操作
         if (tab.id === 'price') {
           const sortDirection = tab.condition.sortDirection;
-          tab.condition.sortDirection = sortDirection === 'desc' ? 'asc' : 'desc';
+          tab.condition.sortDirection =            sortDirection === 'desc' ? 'asc' : 'desc';
           tab.iconClass = tab.condition.sortDirection;
           this.tabs[index] = tab;
         } else {
@@ -632,7 +630,10 @@ export default {
         num: 1,
         size: this.pageCfg.page.pageSize
       });
-      const difKeys = this.jshUtil.findDifKey(this.preSearchCondition, condition);
+      const difKeys = this.jshUtil.findDifKey(
+        this.preSearchCondition,
+        condition
+      );
       // 没有不同则直接返回
       if (!Object.keys(difKeys).length) {
         return;
@@ -682,15 +683,17 @@ export default {
       this.deliveryAddressList = list;
       this.curChoseDeliveryAddress = item;
       // 更改默认的送达方
-      this.customerService.changeDefaultSendTo({
-        sendToCode: item.customerCode
-      }).then(({ code }) => {
-        if (code === '1') {
-          // 更改成功之后更新store
-          this[USER.UPDATE_DEFAULT_SEND_TO](item);
-        }
-      });
-    },
+      this.customerService
+        .changeDefaultSendTo({
+          sendToCode: item.customerCode
+        })
+        .then(({ code }) => {
+          if (code === '1') {
+            // 更改成功之后更新store
+            this[USER.UPDATE_DEFAULT_SEND_TO](item);
+          }
+        });
+    }
   }
 };
 </script>
