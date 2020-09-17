@@ -44,6 +44,11 @@
       <view class="appdefpro-row-left">明细地址</view>
       <input class="appdefpro-title" placeholder="请输入明细地址" />
       <i class="appdefpro-icon iconfont iconyou"></i>
+      <view class="appdefpro-addressList">
+        <view v-for="(item, index) in addressesList" :key="index">
+          <view class="appdefpro-address">{{item.name}}</view>
+        </view>
+      </view>
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row2">
@@ -79,6 +84,7 @@ export default {
       textnum: 12,
       //配送地址列表
       addressesList: [],
+      payerList: [],
       deliveryAddressList: {},
       allPayer: [],
       form: {
@@ -93,6 +99,8 @@ export default {
   },
   created() {
     this.getAccountMsg();
+    this.getDeliveryAddress();
+    this.getAfterSalePayer();
   },
   methods: {
     switchchange() {
@@ -111,7 +119,10 @@ export default {
       await this.customerService.addressesList(1).then(({ code, data }) => {
         if (code === '1') {
           this.addressesList = data;
-          // console.log(3333333333333333333333333333333);
+          this.addressesList.forEach(item => {
+            item.name = `(${item.customerCode})${item.addressName}`;
+          });
+          console.log(this.addressesList);
           // console.log(data);
           // // 配送地址列表
           // this.deliveryAddressList = data.map(v => ({
@@ -140,7 +151,7 @@ export default {
     async getAfterSalePayer() {
       await this.customerService.getcustomersList(1).then(({ code, data }) => {
         if (code === '1') {
-
+          this.payerList = data;
         }
       });
     }
