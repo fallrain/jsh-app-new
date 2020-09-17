@@ -1,0 +1,68 @@
+.mycre-bg {
+  width: 750px;
+  height: 1508px;
+  background: #f5f5f5;
+  padding: 24px;
+}
+.mycre-row {
+  display: flex;
+}
+.mycre-rowright {
+  margin-left: auto;
+  margin-right: 10px;
+  height: 40px;
+  font-size: 29px;
+  font-family: PingFangSC-Light, PingFang SC;
+  font-weight: 300;
+  color: #2283e2;
+  line-height: 40px;
+}
+.mycre-rowright-img {
+  margin-right: 14px;
+  margin-top: 12px;
+  width: 17px;
+  height: 20px;
+}
+.mycre-box {
+  margin-top: 24px;
+  width: 702px;
+  border-top: 4px #2283e2 solid;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 28px 24px 36px 24px;
+}
+.mycre-text {
+  height: 40px;
+  font-size: 29px;
+  font-family: PingFangSC-Regular, PingFang SC;
+  font-weight: 400;
+  line-height: 40px;
+}
+.mycre-color {
+  color: #2283e2;
+}
+.mycre-color2 {
+  color: #333333;
+}
+.mycre-color3 {
+  color: #999999;
+}
+.mycre-space {
+  margin-top: 8px;
+}
+.mycre-space2 {
+  margin-top: 24px;
+}
+.mycre-line {
+  border-top: 2px dashed #c3c3c3;
+  margin-right: 2px;
+  margin-bottom: 6px;
+}
+.mycre-space3 {
+  margin-top: 12px;
+}
+
+.mycre-row-righttext {
+  margin-right: 0;
+  margin-left: auto;
+}

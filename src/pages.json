@@ -452,6 +452,48 @@
       "style": {
         "navigationBarTitleText": "pos手续费扣除确认"
       }
+    },
+    {
+      "path": "pages/bankacceptance/JOnlineFinancingSigningAgreement",
+      "style": {
+        "navigationBarTitleText": "在线融资协议签订"
+      }
+    },
+    {
+      "path": "pages/bankacceptance/JBankBinding",
+      "style": {
+        "navigationBarTitleText": "银行绑定"
+      }
+    },
+    {
+      "path": "pages/bankacceptance/JBankBindingError",
+      "style": {
+        "navigationBarTitleText": "银行绑定错误"
+      }
+    },
+    {
+      "path": "pages/bankacceptance/JFinancingRecharge",
+      "style": {
+        "navigationBarTitleText": "融资充值"
+      }
+    },
+    {
+      "path": "pages/bankacceptance/JFinancingBindingBankError",
+      "style": {
+        "navigationBarTitleText": "融资绑定银行失败"
+      }
+    },
+    {
+      "path": "pages/bankacceptance/JMyCredit",
+      "style": {
+        "navigationBarTitleText": "我的授信"
+      }
+    },
+    {
+      "path": "pages/bankacceptance/JFinancingOrderInquiry",
+      "style": {
+        "navigationBarTitleText": "融资订单查询"
+      }
     }
   ],
   "subPackages": [

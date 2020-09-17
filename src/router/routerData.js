@@ -58,15 +58,22 @@ const data = [
   'pages/aftersale/JWhereBuyReturnConfirm',
   'pages/aftersale/JWhereBuyReturnDetails',
   'pages/aftersale/JWhereBuyReturnTwo',
-  'pages/bankacceptance/JConfirmationOfFeeDeduction',
+  'pages/bankacceptance/JProofOfEntry',
   'pages/bankacceptance/JDiscountConfirmation',
   'pages/bankacceptance/JNewConfirmationLetter',
-  'pages/bankacceptance/JNewTerminalPOS',
-  'pages/bankacceptance/JPosHandlingFee',
-  'pages/bankacceptance/JProofOfEntry',
   'pages/bankacceptance/JProofOfEntryNew',
-  'pages/bankacceptance/JTerminalPOSAnnualFee',
   'pages/bankacceptance/JTerminalPOSApplication',
-  'pages/bankacceptance/JTerminalPOSDetails'
+  'pages/bankacceptance/JTerminalPOSDetails',
+  'pages/bankacceptance/JNewTerminalPOS',
+  'pages/bankacceptance/JTerminalPOSAnnualFee',
+  'pages/bankacceptance/JPosHandlingFee',
+  'pages/bankacceptance/JConfirmationOfFeeDeduction',
+  'pages/bankacceptance/JOnlineFinancingSigningAgreement',
+  'pages/bankacceptance/JBankBinding',
+  'pages/bankacceptance/JBankBindingError',
+  'pages/bankacceptance/JFinancingRecharge',
+  'pages/bankacceptance/JFinancingBindingBankError',
+  'pages/bankacceptance/JMyCredit',
+  'pages/bankacceptance/JFinancingOrderInquiry'
 ];
 export default { data };
