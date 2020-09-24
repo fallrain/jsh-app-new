@@ -37,16 +37,16 @@
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">付款方</view>
       <input class="appdefpro-title" placeholder="请输入付款方" />
-      <i class="appdefpro-icon iconfont iconyou"></i>
+      <i class="appdefpro-icon iconfont iconyou" @tap="showPayer"></i>
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">明细地址</view>
-      <input class="appdefpro-title" placeholder="请输入明细地址" />
-      <i class="appdefpro-icon iconfont iconyou"></i>
-      <view class="appdefpro-addressList">
+      <input class="appdefpro-title" placeholder="请输入明细地址" v-model="address"/>
+      <i class="appdefpro-icon iconfont iconyou" @tap="showAddress"></i>
+      <view class="appdefpro-addressList" v-if="isShowAddress">
         <view v-for="(item, index) in addressesList" :key="index">
-          <view class="appdefpro-address">{{item.name}}</view>
+          <view class="appdefpro-address" @tap="itemAddress(item)">{{item.name}}</view>
         </view>
       </view>
     </view>
@@ -79,6 +79,9 @@ import { USER } from '@/store/mutationsTypes';
 export default {
   data() {
     return {
+      address: '',
+      isShowAddress: true,
+      isShowPayer: false,
       value: [0],
       years: ['aa', 'bbb', 'cc', 'ccdd', 'eee'],
       textnum: 12,
@@ -146,6 +149,14 @@ export default {
           // }
         }
       });
+    },
+    showAddress() {
+      console.log(111111);
+      this.isshowAddress = !this.isshowAddress;
+      console.log(this.isshowAddress);
+    },
+    itemAddress(item) {
+      this.address = item.name;
     },
     //  售后付款方列表
     async getAfterSalePayer() {
