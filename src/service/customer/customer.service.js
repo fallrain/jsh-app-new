@@ -9,8 +9,9 @@ export default {
     /* 地址列表 */
     return jGet(urls.addressesList(data));
   },
-  afterSalePayer(data) {
-    return jGet(urls.afterSalePayer(data));
+  afterSalePayer(code, data) {
+    /* 售后付款方列表 */
+    return jGet(urls.afterSalePayer(code, data));
   },
   getCustomer() {
     /* 获取售达方 */

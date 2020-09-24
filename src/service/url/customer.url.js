@@ -7,8 +7,8 @@ const urls = {
     return `/customers/auxiliary/addresses?status=${status}`;
   },
   // 售后付款方
-  afterSalePayer(status) {
-    return `/customers/auxiliary/payer?status=${status}`;
+  afterSalePayer(code, status) {
+    return `/customers/auxiliary/payer?salesGroupCode=${code}&status=${status}`;
   },
   // 收藏的商品的数据
   queryCustomerInterestProductByAccount: '/customer/queryCustomerInterestProductByAccount',

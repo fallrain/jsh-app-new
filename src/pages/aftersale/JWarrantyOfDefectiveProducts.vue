@@ -36,17 +36,22 @@
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">付款方</view>
-      <input class="appdefpro-title" placeholder="请输入付款方" />
+      <input class="appdefpro-title" placeholder="请输入付款方" v-model="payer"/>
       <i class="appdefpro-icon iconfont iconyou" @tap="showPayer"></i>
+      <view class="appdefpro-addressList" v-show="isShowPayer">
+        <view v-for="(item, index) in payerList" :key="index">
+          <view :class="['appdefpro-address', item.isChecked && 'active']" @tap="itemPayer(item)">{{item.name}}</view>
+        </view>
+      </view>
     </view>
     <view class="appdefpro-row-row"></view>
     <view class="appdefpro-row">
       <view class="appdefpro-row-left">明细地址</view>
       <input class="appdefpro-title" placeholder="请输入明细地址" v-model="address"/>
       <i class="appdefpro-icon iconfont iconyou" @tap="showAddress"></i>
-      <view class="appdefpro-addressList" v-if="isShowAddress">
+      <view class="appdefpro-addressList" v-show="isShowAddress">
         <view v-for="(item, index) in addressesList" :key="index">
-          <view class="appdefpro-address" @tap="itemAddress(item)">{{item.name}}</view>
+          <view :class="['appdefpro-address', item.isChecked && 'active']" @tap="itemAddress(item)">{{item.name}}</view>
         </view>
       </view>
     </view>
@@ -74,18 +79,24 @@
 
 <script>
 import './css/warrantyofdefectiveproducts.scss';
-import { USER } from '@/store/mutationsTypes';
+import {
+  mapGetters
+} from 'vuex';
+import {
+  USER
+} from '../../store/mutationsTypes';
 
 export default {
   data() {
     return {
       address: '',
-      isShowAddress: true,
+      payer: '',
+      isShowAddress: false,
       isShowPayer: false,
       value: [0],
       years: ['aa', 'bbb', 'cc', 'ccdd', 'eee'],
       textnum: 12,
-      //配送地址列表
+      // 配送地址列表
       addressesList: [],
       payerList: [],
       deliveryAddressList: {},
@@ -105,6 +116,12 @@ export default {
     this.getDeliveryAddress();
     this.getAfterSalePayer();
   },
+  computed: {
+    ...mapGetters({
+      saleInfo: USER.GET_SALE,
+    })
+
+  },
   methods: {
     switchchange() {
       this.$refs.popup.open();
@@ -122,49 +139,49 @@ export default {
       await this.customerService.addressesList(1).then(({ code, data }) => {
         if (code === '1') {
           this.addressesList = data;
-          this.addressesList.forEach(item => {
+          this.addressesList.forEach((item) => {
             item.name = `(${item.customerCode})${item.addressName}`;
+            item.isChecked = false;
           });
           console.log(this.addressesList);
-          // console.log(data);
-          // // 配送地址列表
-          // this.deliveryAddressList = data.map(v => ({
-          //   id: v.customerCode,
-          //   name: `(${v.customerCode})${v.addressName}`,
-          //   tradeCode: v.tradeCode
-          // }));
-          // console.log(this.deliveryAddressList);
-          // // 当前配送地址修改(选出默认地址)
-          // const defaultIndex = data.findIndex(v => v.defaultFlag === 1);
-          // console.log(defaultIndex);
-          // if (defaultIndex > -1) {
-          //   console.log(data[defaultIndex]);
-          //   const curChoseDeliveryAddress = data[defaultIndex];
-          //   curChoseDeliveryAddress.name = `${curChoseDeliveryAddress.customerCode}${curChoseDeliveryAddress.addressName}`;
-          //   console.log(curChoseDeliveryAddress);
-          //   // 更新默认送达方store
-          //   this[USER.UPDATE_DEFAULT_SEND_TO](curChoseDeliveryAddress);
-          //   this.deliveryAddressList[defaultIndex].checked = true;
-          //   this.curChoseDeliveryAddress = curChoseDeliveryAddress;
-          // }
         }
       });
     },
     showAddress() {
       console.log(111111);
-      this.isshowAddress = !this.isshowAddress;
-      console.log(this.isshowAddress);
+      this.isShowAddress = !this.isShowAddress;
+      console.log(this.isShowAddress);
     },
     itemAddress(item) {
       this.address = item.name;
+      this.addressesList.forEach((ele) => {
+        ele.isChecked = false;
+      });
+      item.isChecked = true;
+      this.isShowAddress = false;
     },
     //  售后付款方列表
     async getAfterSalePayer() {
-      await this.customerService.getcustomersList(1).then(({ code, data }) => {
+      await this.customerService.afterSalePayer(this.saleInfo.salesGroupCode, 1).then(({ code, data }) => {
         if (code === '1') {
           this.payerList = data;
+          this.payerList.forEach((item) => {
+            item.name = `(${item.payerCode})${item.payerName}(${item.salesGroupCode})`;
+            item.isChecked = false;
+          });
         }
       });
+    },
+    showPayer() {
+      this.isShowPayer = !this.isShowPayer;
+    },
+    itemPayer(item) {
+      this.payer = item.name;
+      this.payerList.forEach((ele) => {
+        ele.isChecked = false;
+      });
+      item.isChecked = true;
+      this.isShowPayer = false;
     }
   },
 };
