@@ -3,14 +3,13 @@ const path = require('path');
 
 // const webpack = require('webpack');
 
-
 module.exports = {
   devServer: {
     host: '0.0.0.0',
     port: 8098,
     compress: true,
     open: true,
-    openPage: '#/pages/applicationsIndex/applicationsIndex',
+    openPage: '#/pages/aftersale/JAfterSale',
     proxy: {
       '/new/api': {
         target: 'http://mall.jsh.com',
@@ -24,10 +23,12 @@ module.exports = {
     }
   },
   chainWebpack: (config) => {
-    config.module.rule('images')
+    config.module
+      .rule('images')
       .exclude.add(path.resolve(__dirname, 'src/assets/img/tabbar/'))
       .end();
-    config.module.rule('images-tab-bar')
+    config.module
+      .rule('images-tab-bar')
       .test(/\.(png|jpe?g|gif|webp)(\?.*)?$/)
       .pre()
       .include.add(path.resolve(__dirname, 'src/assets/img/tabbar/'))
@@ -43,7 +44,6 @@ module.exports = {
             name: 'static/img/[name].[ext]'
           }
         }
-
       }))
       .end();
     return config;

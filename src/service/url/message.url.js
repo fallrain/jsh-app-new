@@ -16,7 +16,7 @@ const urls = {
   getInfomation(id) {
     return `/notice/detail/${id}`;
   },
-  page:(queryStr) => `/notice/page${queryStr}`
+  page: queryStr => `/notice/page${queryStr}`
 };
 util.addPrefix(baseURL, urls);
 export default urls;

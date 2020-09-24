@@ -2,18 +2,24 @@
   <view class="vehicleList">
     <view class="vehicleList-tab">
       <view class="vehicle-search j-flex-aic">
-        <j-search-input v-model="filterForm.name" @search="silentReSearch" placeholder='请输入搜索信息'></j-search-input>
+        <j-search-input @search="silentReSearch" placeholder="请输入搜索信息" v-model="filterForm.name"></j-search-input>
         <button @tap="silentReSearch" class="vehicle-btn" type="button">搜索</button>
       </view>
       <view>
-        <j-head-tab :popTabs="popTabs" :tabs="tabs" @tabClick="tabClick" @tabconfirmPup="tabconfirmPup"
-                    class="mb12" activeItemName="item1"></j-head-tab>
+        <j-head-tab
+          :popTabs="popTabs"
+          :tabs="tabs"
+          @tabClick="tabClick"
+          @tabconfirmPup="tabconfirmPup"
+          activeItemName="item1"
+          class="mb12"
+        ></j-head-tab>
       </view>
     </view>
     <view>
       <view class="vehicle-listItem" v-if="vehicleList&&vehicleList.length>0">
         <view :key="index" v-for="(item,index) in vehicleList">
-          <vehicle-item :goods="item" :index="index" @change="vehicleNum" @addCar="addVehicleCar"></vehicle-item>
+          <vehicle-item :goods="item" :index="index" @addCar="addVehicleCar" @change="vehicleNum"></vehicle-item>
         </view>
       </view>
       <view class="vehicle-listItemEl" v-else>暂无数据~</view>
@@ -22,45 +28,65 @@
       <template>
         <view class="vehicle-drawer-filter-head-ads-wrap">
           <view class="vehicle-drawer-filter-head">
-            <view><text>是否限制高端型号</text></view>
-            <view :class="['vehicle-drawer-filter-status',switchType&&'active']">{{switchType ? '是' : '否'}}</view>
+            <view>
+              <text>是否限制高端型号</text>
+            </view>
+            <view
+              :class="['vehicle-drawer-filter-status',switchType&&'active']"
+            >{{switchType ? '是' : '否'}}</view>
             <j-switch :active.sync="switchType"></j-switch>
           </view>
         </view>
-        <j-drawer-filter-item v-for="(item,index) in filterList" :key="index" :filterItem="item"
-                              :index="index" @change="filterListChange"></j-drawer-filter-item>
+        <j-drawer-filter-item
+          :filterItem="item"
+          :index="index"
+          :key="index"
+          @change="filterListChange"
+          v-for="(item,index) in filterList"
+        ></j-drawer-filter-item>
         <view class="vehicle-drawer-filter-head-ads-wrap">
-          <view class="vehicle-drawer-filter-head" @tap="showDeliveryAddress">
-            <view><text>配送至</text></view>
+          <view @tap="showDeliveryAddress" class="vehicle-drawer-filter-head">
+            <view>
+              <text>配送至</text>
+            </view>
             <i class="iconfont iconyou vehicle-drawer-filter-head-icon-right"></i>
           </view>
           <view class="vehicle-drawer-filter-head-ads">{{curChoseDeliveryAddress.name}}</view>
         </view>
         <view class="vehicle-drawer-filter-head-ads-wrap">
           <view class="vehicle-drawer-filter-head">
-            <view><text>价格区间</text></view>
+            <view>
+              <text>价格区间</text>
+            </view>
           </view>
           <view class="vehicle-drawer-filter-price-range">
-            <input class="vehicle-drawer-filter-price-ipt"
-                   placeholder="最低价格" type="number" v-model="filterForm.lowPrice">
+            <input
+              class="vehicle-drawer-filter-price-ipt"
+              placeholder="最低价格"
+              type="number"
+              v-model="filterForm.lowPrice"
+            />
             <view class="vehicle-drawer-filter-price-line"></view>
-            <input class="vehicle-drawer-filter-price-ipt"
-                   placeholder="最高价格" type="number" v-model="filterForm.highPrice">
+            <input
+              class="vehicle-drawer-filter-price-ipt"
+              placeholder="最高价格"
+              type="number"
+              v-model="filterForm.highPrice"
+            />
           </view>
         </view>
       </template>
     </j-drawer>
-    <j-choose-delivery-address :list="deliveryAddressList" :show.sync="isShowAddressDrawer"
-                               @change="deliveryAddressListChange">
-    </j-choose-delivery-address>
+    <j-choose-delivery-address
+      :list="deliveryAddressList"
+      :show.sync="isShowAddressDrawer"
+      @change="deliveryAddressListChange"
+    ></j-choose-delivery-address>
     <view class="vehicle-high"></view>
     <view class="vehicle-foot">
       <vehicle-foot :carNum="carNum" :carType="ZCLX.carNames" :tiJiINfo="tiJiINfo"></vehicle-foot>
     </view>
-    <m-toast
-      :isdistance="true"
-      ref="toast"
-    ></m-toast>
+    <m-toast :isdistance="true" ref="toast"></m-toast>
   </view>
 </template>
 
@@ -222,19 +248,19 @@ export default {
   },
   mounted() {
     // 判断是否传统渠道
-    if(this.userInf.channelGroup == 'CT') {
-       uni.showModal({
-          title: '提示',
-          content: '当前客户无整车权限',
-          showCancel:false,
-        });
+    if (this.userInf.channelGroup == 'CT') {
+      uni.showModal({
+        title: '提示',
+        content: '当前客户无整车权限',
+        showCancel: false,
+      });
     }
   },
   methods: {
     ...mapMutations([
       USER.UPDATE_DEFAULT_SEND_TO
     ]),
-    async queSeq() { 
+    async queSeq() {
       const timetamp = new Date().valueOf();
       const typee = this.userInf.channelGroup;
       const { code, data } = await this.vehicleService.queryNewSeq(timetamp, typee);

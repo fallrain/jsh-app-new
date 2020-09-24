@@ -436,9 +436,15 @@
       }
     },
     {
+      "path": "pages/bankacceptance/JNewPosInformation",
+      "style": {
+        "navigationBarTitleText": "pos新建"
+      }
+    },
+    {
       "path": "pages/bankacceptance/JTerminalPOSAnnualFee",
       "style": {
-        "navigationBarTitleText": "pos费用"
+        "navigationBarTitleText": "终端pos机年费"
       }
     },
     {

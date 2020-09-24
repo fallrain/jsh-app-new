@@ -24,12 +24,13 @@
 </template>
 
 <script>
-import "./css/proofentnew.scss";
-import down2 from "../../assets/img/bankacceptance/down2.png";
+import './css/proofentnew.scss';
+import down2 from '../../assets/img/bankacceptance/down2.png';
+
 export default {
   data() {
     return {
-      down2: down2
+      down2
     };
   }
 };

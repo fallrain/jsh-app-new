@@ -8,7 +8,7 @@
         <view class="proofent-right-title">
           <view class="proofent-color">日期</view>
         </view>
-        <image class="proofent-right-icon" :src="img1" />
+        <image :src="img1" class="proofent-right-icon" />
       </view>
     </view>
     <view class="proofent-box">
@@ -40,9 +40,7 @@
           </view>
           <view class="proofent-row-right">
             <view class="proofent-right-title">
-              <view class="proofent-color3"
-                >重庆新日日顺家电销售有限公司青岛分公司</view
-              >
+              <view class="proofent-color3">重庆新日日顺家电销售有限公司青岛分公司</view>
             </view>
           </view>
         </view>
@@ -86,9 +84,7 @@
           </view>
           <view class="proofent-row-right">
             <view class="proofent-right-title">
-              <view class="proofent-color3"
-                >重庆新日日顺家电销售有限公司青岛分公司</view
-              >
+              <view class="proofent-color3">重庆新日日顺家电销售有限公司青岛分公司</view>
             </view>
           </view>
         </view>

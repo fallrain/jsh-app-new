@@ -19,7 +19,8 @@ import openAccountService from './openAccount/openAccount.service';
 import activityService from './activity/activity.service';
 import udeskService from './udesk/udesk.service';
 import apiVService from './apiV/apiV.service';
-import productService from './product/product.service'
+import productService from './product/product.service';
+import accountService from './account/account.service';
 
 export default {
   install(Vue) {
@@ -67,5 +68,7 @@ export default {
     //  我的-修改手机号apiVService
     Vue.prototype.apiVService = apiVService;
     Vue.prototype.productService = productService;
+    //  account字段接口服务
+    Vue.prototype.accountService = accountService;
   }
 };

@@ -63,7 +63,7 @@ const data = [
   'pages/bankacceptance/JNewConfirmationLetter',
   'pages/bankacceptance/JProofOfEntryNew',
   'pages/bankacceptance/JTerminalPOSApplication',
-  'pages/bankacceptance/JTerminalPOSDetails',
+  // 'pages/bankacceptance/JTerminalPOSDetails',
   'pages/bankacceptance/JNewTerminalPOS',
   'pages/bankacceptance/JTerminalPOSAnnualFee',
   'pages/bankacceptance/JPosHandlingFee',
