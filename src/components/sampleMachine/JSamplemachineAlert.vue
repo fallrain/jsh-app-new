@@ -31,7 +31,7 @@
             ></j-verification-code>
             <button class="TAlertVerification-row-right-btn"
                     @tap="determine"
-            >确定1</button>
+            >确定</button>
          </view>
 
       </view>
