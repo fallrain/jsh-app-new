@@ -3,7 +3,7 @@
     <view class="marketDetail-order-infor mb24">
       <view class="market-detail-head">
         <view class="title">
-          名称：{{currentDetail.name}}
+          名称：{{currentDetail.name || currentDetail.promotionName || ''}}
         </view>
         <view class="market-type-info">
           <view v-if="currentDetail.activityType === 'taocan'" class="type-info-item">
@@ -18,7 +18,7 @@
               活动结束时间：
             </view>
             <view class="type-item-right">
-              {{fomrmateDate(currentDetail.endDate)}}
+              {{formateDate(currentDetail.endDate) || formateDate(currentDetail.expTime) || ''}}
             </view>
           </view>
         </view>
@@ -265,11 +265,14 @@ export default {
       }
       return PBnum;
     },
-    fomrmateDate() {
-      return val => val.split(' ')[0];
-    }
   },
   methods: {
+    formateDate(val) {
+      if (val) {
+        return val.split(' ')[0];
+      }
+      return '';
+    },
     getSmallest() {
       let small = 0;
       this.currentDetail.products.forEach((item) => {

@@ -21,7 +21,7 @@
           v-for="(item,index) in list"
           :key="index"
           :activity="item"
-          @activityDetail ="activityDetail"
+          @activityDetail="activityDetail"
           @goOrder ="goOrder"
           @getNum="getNum"
         ></j-activity-item>
@@ -162,6 +162,7 @@ export default {
         sendtoCode: '',
         productCodes: []
       },
+      isLoadAddress: false,
       // 活动列表
       list: [
       ],
@@ -260,7 +261,7 @@ export default {
     };
   },
   beforeMount() {
-    this.getAddressList();
+    // this.getAddressList();
   },
   onLoad(option) {
     if (option.productCode) {
@@ -337,10 +338,12 @@ export default {
             icon: 'none'
           });
         }
+      } else {
+        this.mescroll.endErr();
       }
       // 当前页码的数据
       const scrollView = {};
-      scrollView.pageSize = 10;
+      scrollView.pageSize = data.pageSize;
       scrollView.total = data.total;
       return scrollView;
     },
@@ -422,6 +425,8 @@ export default {
       }
       this.form.sendtoCode = this.currentAdd.addressCode;
       this.stockForm.sendtoCode = this.currentAdd.addressCode;
+      this.isLoadAddress = true;
+      return true;
     },
     changeAddress(addList, current) {
       this.addressList = addList;
@@ -449,6 +454,9 @@ export default {
     },
     async upCallback(pages) {
       /* 上推加载 */
+      if (!this.isLoadAddress) {
+        await this.getAddressList();
+      }
       const scrollView = await this.getActivityList(pages);
       this.mescroll.endBySize(scrollView.pageSize, scrollView.total);
     },
