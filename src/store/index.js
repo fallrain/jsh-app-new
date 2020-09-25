@@ -8,6 +8,7 @@ import vehicle from '@/store/vehicle';
 import commodity from '@/store/commodity';
 import goodsList from '@/store/goodsList';
 import shoppingCart from '@/store/shoppingCart';
+import activity from '@/store/activity';
 
 
 Vue.use(Vuex);
@@ -28,6 +29,7 @@ export default new Vuex.Store({
     vehicle,
     commodity,
     goodsList,
-    shoppingCart
+    shoppingCart,
+    activity
   }
 });

@@ -186,6 +186,7 @@ export default {
   },
   onLoad(option) {
     if (option.formData) {
+      debugger
       this.formData = JSON.parse(option.formData);
       this.formSubmit.saletoCode = this.formData.saletoCode;
       this.onLoadInit();
@@ -402,13 +403,12 @@ export default {
       /* 获取支付信息 */
       const condition = this.getPayForm();
       const { code, data } = await this.orderService.paytoInfo(condition);
-      console.log(code);
       if (code === '1') {
         let payList = [];
         for (const k in data) {
-          this.$set(this.payInfoData, k, data[k]);
           payList = payList.concat(data[k]);
         }
+        this.payInfoData = data
         this.allPayer = payList;
       }
     },

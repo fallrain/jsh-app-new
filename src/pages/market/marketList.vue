@@ -120,11 +120,12 @@ import mescrollMixin from '@/components/plugin/mescroll-uni/mescroll-mixins';
 import selfMescrollMixin from '@/mixins/mescroll.mixin';
 import './css/marketList.scss';
 import {
+  mapActions,
   mapMutations,
   mapGetters
 } from 'vuex';
 import {
-  USER
+  USER, ACTIVITY
 } from '../../store/mutationsTypes';
 
 export default {
@@ -297,7 +298,11 @@ export default {
   },
   methods: {
     ...mapMutations([
-      USER.UPDATE_DEFAULT_SEND_TO
+      USER.UPDATE_DEFAULT_SEND_TO,
+      ACTIVITY.UPDATE_ACTIVITY
+    ]),
+    ...mapActions([
+      USER.UPDATE_DEFAULT_SEND_TO_ASYNC
     ]),
     async init() {
       // await this.getAddressList();
@@ -407,7 +412,8 @@ export default {
     },
     async getAddressList() {
       // 获取地址
-      const { code, data } = await this.customerService.addressesList('1');
+      const { code, data } = await this[USER.UPDATE_DEFAULT_SEND_TO_ASYNC]();
+      // const { code, data } = await this.customerService.addressesList('1');
       if (code === '1') {
         this.addressList = data;
       }
@@ -515,10 +521,9 @@ export default {
     },
     async activityDetail(currentInfo) {
       const detail = await this.getAllStock(currentInfo);
-      console.log(detail);
+      this[ACTIVITY.UPDATE_ACTIVITY](detail);
       uni.navigateTo({
-        url: `/pages/market/marketDetail?item=${JSON.stringify(detail)}
-        &saletoCode=${this.form.saletoCode}&sendtoCode=${this.form.sendtoCode}`
+        url: '/pages/market/marketDetail'
       });
     },
     // 获取所有产品的库存

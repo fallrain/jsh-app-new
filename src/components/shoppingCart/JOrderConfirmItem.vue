@@ -292,6 +292,7 @@ export default {
       this.orderItem.wdNo = val;
     },
     payInfoData() {
+      debugger
       // 初始化地址信息
       this.currentPayInfoData = JSON.parse(JSON.stringify(this.payInfoData));
       for (const key in this.currentPayInfoData) {
