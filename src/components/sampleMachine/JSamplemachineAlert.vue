@@ -21,7 +21,7 @@
               class="TAlertVerification-inputView"
               placeholder="请输入验证码"
               placeholder-class="col_c"
-              v-model="form.verificationCode"
+              v-model="verificationCode"
             >
          </view>
          <view class="TAlertVerification-row-right-wrap">
@@ -31,7 +31,7 @@
             ></j-verification-code>
             <button class="TAlertVerification-row-right-btn"
                     @tap="determine"
-            >确定</button>
+            >确定1</button>
          </view>
 
       </view>
@@ -90,6 +90,7 @@ export default {
   },
   data() {
     return {
+      verificationCode: '',
       erifyKey: 0,
       // 订单返回数据
       orderData: [],
@@ -102,7 +103,7 @@ export default {
     console.log(this.confirmInfo);
     console.log(this.currentPayer);
     console.log(this.currentAddress);
-    this.setPageInfo();
+    // this.setPageInfo();
     this.getSampleOrder();
   },
   computed: {
@@ -162,15 +163,15 @@ export default {
       // 发送验证码
       const { code, data } = await this.samplemachineService.sendMessage({
         account: this.saleInfo.customerCode,
-        productCode: this.confirmInfo.CODE,
+        productCode: this.confirmInfo.code,
         orderNo: this.orderNo,
-        whCode: this.confirmInfo.detailList[0].YGS_LGORT,
-        werks: this.confirmInfo.detailList[0].YGS_WERKS
+        whCode: this.confirmInfo.detailList[0].ygsLgort,
+        werks: this.confirmInfo.detailList[0].ygsWerks
       });
       if (code === '1') {
-        if (data.data.verifyKey) {
-          console.log(data.data.verifyKey);
-          this.erifyKey = data.data.verifyKey;
+        if (data.verifyKey) {
+          console.log(data.verifyKey);
+          this.erifyKey = data.verifyKey;
         }
         uni.showToast({
           title: '短信发送成功',
@@ -191,7 +192,8 @@ export default {
       console.log(this.currentPayer);
       console.log(this.currentAddress);
       console.log(this.confirmInfo);
-      if (this.form.verificationCode) {
+      console.log(this.form);
+      if (this.verificationCode) {
         // 提交订单
         /* const { code, data } = await this.transfergoodsService.submitDhOrder({
           timestamp: Date.parse(new Date()),
@@ -201,7 +203,7 @@ export default {
           verifyKey: `${this.erifyKey}`,
         }); */
         const time = new Date().getTime();
-        const beforeSign = `${this.saleInfo.customerCode}${this.form.verificationCode}${time}${this.confirmInfo.CODE}1YPJSINGCODE20200814`;
+        const beforeSign = `${this.saleInfo.customerCode}${this.verificationCode}${time}${this.confirmInfo.code}1YPJSINGCODE20200814`;
         console.log(beforeSign);
         const signCode = md5(beforeSign);
         console.log(signCode);
@@ -214,22 +216,22 @@ export default {
             MKTID: this.saleInfo.tradeCode,
             PAYTO_NAME: this.saleInfo.customerName,
             PAYTO_TYPE: this.currentPayer.payerType,
-            PRODUCT_MODEL: this.confirmInfo.MODEL,
+            PRODUCT_MODEL: this.confirmInfo.model,
             SENDTO_ADDRESS: this.currentAddress.address,
             SENDTO_NAME: this.currentAddress.addressName,
             SUBCHANNEL: this.saleInfo.subChannel,
-            WHCODE: this.confirmInfo.detailList[0].YGS_LGORT,
-            WHNAME: this.confirmInfo.detailList[0].YGS_LGOBE,
+            WHCODE: this.confirmInfo.detailList[0].ygsLgort,
+            WHNAME: this.confirmInfo.detailList[0].ygsLgobe,
             YJMFID: this.currentAddress.manageCustomerCode,
             YJMFID_NAME: this.currentAddress.manageCustomerCode,
             actPrice: this.confirmInfo.$allPrice.ActPrice,
             bateMoney: this.confirmInfo.$allPrice.ReBateMoney,
             bateRate: this.confirmInfo.$allPrice.BateRate,
-            brand: this.confirmInfo.BRAND,
+            brand: this.confirmInfo.brand,
             canChange: true,
-            invcode: this.confirmInfo.CODE,
-            invsort: this.confirmInfo.YGS_SPART,
-            invstd: this.confirmInfo.NAME,
+            invcode: this.confirmInfo.code,
+            invsort: this.confirmInfo.detailList[0].ygsSpart,
+            invstd: this.confirmInfo.name,
             longfeiMFID: this.currentAddress.addressCode,
             lossPrice: this.confirmInfo.$allPrice.UnitPrice,
             lossRate: this.confirmInfo.$allPrice.ReLossRate,
@@ -239,18 +241,18 @@ export default {
             orderSource: '',
             payto: this.saleInfo.customerCode,
             realPrice: this.confirmInfo.$allPrice.ActPrice,
-            searchImage: this.confirmInfo.SEARCHIMAGE,
+            searchImage: this.confirmInfo.searchImage,
             seq: this.orderNo,
             summoney: parseFloat(this.totalMoney),
             unitPrice: this.confirmInfo.$allPrice.UnitPrice,
             userId: this.saleInfo.customerCode,
-            werks: this.confirmInfo.detailList[0].YGS_WERKS,
+            werks: this.confirmInfo.detailList[0].ygsWerks,
             yuncang: this.isYuncang,
           }
         ], {
           timestamp: time,
           validateCode: '5503',
-          verifyCode: this.form.verificationCode,
+          verifyCode: this.verificationCode,
           verifyKey: '',
           customerCode: this.saleInfo.customerCode,
           signCode
