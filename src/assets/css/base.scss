@@ -47,14 +47,14 @@ button {
 /*fix*/
 
 ::-webkit-scrollbar {
-  display: none!important;
+  display: none !important;
   width: 0 !important;
   height: 0 !important;
   -webkit-appearance: none;
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb{
+::-webkit-scrollbar-thumb {
   display: none;
 }
 
@@ -75,8 +75,8 @@ button {
 
 .uni-popup {
   .uni-transition {
-   bottom: calc(var(--window-bottom) - constant(safe-area-inset-bottom)) !important;
-   bottom: calc(var(--window-bottom) - env(safe-area-inset-bottom)) !important;
+    bottom: calc(var(--window-bottom) - constant(safe-area-inset-bottom)) !important;
+    bottom: calc(var(--window-bottom) - env(safe-area-inset-bottom)) !important;
   }
 }
 
@@ -107,7 +107,7 @@ button {
     }
   }
 
-  .uni-drawer__content{
+  .uni-drawer__content {
     padding-top: constant(safe-area-inset-top);
     padding-top: env(safe-area-inset-top);
   }
@@ -181,6 +181,10 @@ button {
       border-right: 0;
     }
   }
+}
+
+.u-wrap {
+  background: transparent !important;
 }
 
 /*fix uview end*/

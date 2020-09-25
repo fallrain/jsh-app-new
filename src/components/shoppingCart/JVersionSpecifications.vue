@@ -31,13 +31,13 @@
                   'jVersionSpecifications-pop-detail-head-title-arrow iconfont iconxia':true,
                   'active': !item.isExpand
                 }"
-                @tap="toggleExpand(item)"
+                @tap="toggleExpand(item,index)"
               >
               </view>
             </view>
             <view
               class="jVersionSpecifications-pop-detail-list"
-              v-if="item.isExpand"
+              v-show="item.isExpand"
             >
               <view
                 :class="['jVersionSpecifications-pop-detail-item',version.checked && 'active']"
@@ -47,7 +47,7 @@
               >
                 <view
                   class="jVersionSpecifications-pop-detail-item-check"
-                  v-if="version.checked"
+                  v-show="version.checked"
                 >
                   <view class="jVersionSpecifications-pop-detail-item-check-icon iconfont icontick"></view>
                 </view>
@@ -103,6 +103,9 @@
 </template>
 
 <script>
+import {
+  produce
+} from 'immer';
 import './css/jVersionSpecifications.scss';
 
 export default {
@@ -174,33 +177,36 @@ export default {
         this.$emit('customCheck', this.versionData, list, parIndex, vIndex);
         return;
       }
-      const curChecked = version.checked;
-      // 除了当前版本，其他版本的选择都取消
-      this.versionData.forEach((v, index) => {
-        // checkbox模式下可在当前版本里多选
-        if (this.type === 'checkbox') {
-          if (parIndex !== index) {
+      const newVersionData = produce(this.versionData, (versionData) => {
+        const curChecked = version.checked;
+        // 除了当前版本，其他版本的选择都取消
+        versionData.forEach((v, index) => {
+          // checkbox模式下可在当前版本里多选
+          if (this.type === 'checkbox') {
+            if (parIndex !== index) {
+              v.list.forEach((otherItem) => {
+                otherItem.checked = false;
+              });
+            }
+          } else {
+            // radio模式下，只能单选
             v.list.forEach((otherItem) => {
               otherItem.checked = false;
             });
           }
-        } else {
-          // radio模式下，只能单选
-          v.list.forEach((otherItem) => {
-            otherItem.checked = false;
-          });
-        }
+        });
+        // 设置选中或者取消
+        versionData[parIndex].list[vIndex].checked = !curChecked;
       });
-      version.checked = !curChecked;
 
-
-      this.$emit('change', this.versionData);
+      this.$emit('change', newVersionData);
     },
-    toggleExpand(item) {
+    toggleExpand(item, index) {
       /* 选择规格展开or收起 */
-      // item.isExpand = !item.isExpand;
-      this.$set(item, 'isExpand', !item.isExpand);
-      this.$emit('change', this.versionData);
+      const newVersionData = produce(this.versionData, (versionData) => {
+        versionData[index].isExpand = !item.isExpand;
+      });
+      this.$emit('change', newVersionData);
     },
     confirm() {
       /* 确定 */

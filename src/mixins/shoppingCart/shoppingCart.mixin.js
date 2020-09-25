@@ -1,6 +1,9 @@
 import {
   getYj
 } from '@/lib/dataDictionary';
+import {
+  produce
+} from 'immer';
 
 export default {
   methods: {
@@ -15,8 +18,28 @@ export default {
       /* 获取产品 */
       return goods.productList && goods.productList[0];
     },
+    getChangeObject(obj, map) {
+      /* 获取改变后的immer数据 */
+      return produce(obj, (draft) => {
+        Object.keys(map).forEach((key) => {
+          let keyObj = draft;
+          if (typeof key === 'string') {
+            const keyAy = key.split('.');
+            keyAy.forEach((v, index) => {
+              if (index !== keyAy.length - 1) {
+                keyObj = keyObj[v];
+              }
+            });
+            keyObj[keyAy[keyAy.length - 1]] = map[key];
+          } else {
+            draft[key] = map[key];
+          }
+        });
+      });
+    },
     getPriceVersionData(goods) {
       /* 获取应该取值价格版本数据 */
+      console.count(111111111);
       /**
        * @goods:array 商品
        * */
@@ -29,7 +52,7 @@ export default {
       // 后来修改的版本
       let updateVersion;
       if (goods.choseOtherVersions && goods.choseOtherVersions.length) {
-        updateVersion = goods.choseOtherVersions;
+        updateVersion = JSON.parse(JSON.stringify(goods.choseOtherVersions));
         // 来源，update表示来着更新的值，更新的的版本可取消
         updateVersion.forEach((v) => {
           v.$origin = 'update';

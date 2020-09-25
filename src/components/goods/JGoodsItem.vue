@@ -122,6 +122,9 @@
 </template>
 
 <script>
+import {
+  produce
+} from 'immer';
 import MToast from '@/components/plugin/xuan-popup_2.2/components/xuan-popup/xuan-popup.vue';
 import JVersionSpecifications from '../shoppingCart/JVersionSpecifications';
 import './css/jGoodsItem.scss';
@@ -492,9 +495,11 @@ export default {
     },
     clearChoseSpecifications() {
       /* 清除版本选中 */
-      this.specificationsList.forEach((version) => {
-        version.list.forEach((v) => {
-          v.checked = false;
+      this.specificationsList = produce(this.specificationsList, (specificationsList) => {
+        specificationsList.forEach((version) => {
+          version.list.forEach((v) => {
+            v.checked = false;
+          });
         });
       });
     },

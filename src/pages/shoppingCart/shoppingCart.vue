@@ -55,6 +55,8 @@
             :warehouseFlag="choseSendAddress.yunCangFlag"
             :followState.sync="goods.followState"
             @change="goodsChange"
+            @choseOtherVersionsChange="choseOtherVersionsChange($event,index)"
+            @numberChange="numberChange($event,index)"
             @del="singleDeleteCart"
             @sign="toSign"
             @updateNumber="refreshShoppingCartList"
@@ -87,6 +89,8 @@
             :creditQuotaList="creditQuotaList"
             :followState.sync="goods.followState"
             @change="goodsChange"
+            @choseOtherVersionsChange="choseOtherVersionsChange($event,index)"
+            @numberChange="numberChange($event,index)"
             @del="singleDeleteCart"
             @updateNumber="refreshShoppingCartList"
             @sign="toSign"
@@ -539,7 +543,9 @@ export default {
       }
       this.shoppingList = shoppingList;
       // 更新底栏
-      this.updateTotal();
+      if (this.isCheckAll) {
+        this.updateTotal();
+      }
       this.isIndustryPickerShow = false;
     },
     resetBtmInf() {
@@ -678,7 +684,9 @@ export default {
     goodsChange(goods, index) {
       /* 商品数据change */
       this.$set(this.shoppingList, index, goods);
-      this.updateTotal();
+      if (this.isCheckAll) {
+        this.updateTotal();
+      }
     },
     updateTotal() {
       /* 更新底栏统计 */
@@ -931,7 +939,9 @@ export default {
         });
       }
       // 更新底栏
-      this.updateTotal();
+      if (this.isCheckAll) {
+        this.updateTotal();
+      }
     },
     addFailureGoodsList(goods) {
       /* 失效产品增加数据 */
@@ -1282,6 +1292,15 @@ export default {
           }[data] || '确定';
         }
       });
+    },
+    numberChange(num, index) {
+      /* 数量change */
+      this.shoppingList[index].number = num;
+      this.shoppingList[index].productList[0].number = num;
+    },
+    choseOtherVersionsChange(checkedList, index) {
+      /* 选择的版本change */
+      this.shoppingList[index].choseOtherVersions = checkedList;
     }
   }
 };

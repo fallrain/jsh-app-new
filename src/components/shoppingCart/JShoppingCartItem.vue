@@ -89,7 +89,7 @@
           <j-number-box
             :max="maxGoodsNumber"
             :min="minGoodsNumber"
-            v-model="goods.number"
+            :value="goods.number"
             @blur="goodsNumChange"
             @minus="goodsNumChange"
             @plus="goodsNumChange"
@@ -149,7 +149,7 @@
           >
             <j-switch
               :active.sync="goods.isFundsFirstMode"
-              @change="goodsChange"
+              @change="goodsChange()"
             >
             </j-switch>
             <text class="jShoppingCartItem-btm-switch-text mr32 ml8">款先</text>
@@ -345,6 +345,9 @@
 </template>
 
 <script>
+import {
+  produce
+} from 'immer';
 import JSwitch from '../form/JSwitch';
 import JVersionSpecifications from './JVersionSpecifications';
 import JPopPicker from '../form/JPopPicker';
@@ -442,9 +445,17 @@ export default {
     this.setPageInf();
   },
   computed: {
+    thisProduct() {
+      /* 获取产品 */
+      return this.goods.productList && this.goods.productList[0];
+    },
+    sdsds() {
+      /* 获取产品 */
+      return this.goods.activityId;
+    },
     stockNum() {
       // inStock
-      const product = this.getProduct(this.goods);
+      const product = this.thisProduct;
       if (!product) {
         return 0;
       }
@@ -455,7 +466,7 @@ export default {
     },
     isDirect() {
       /* 直发 */
-      const product = this.getProduct(this.goods);
+      const product = this.thisProduct;
       if (!product) {
         return false;
       }
@@ -678,8 +689,11 @@ export default {
     isCreditModel(val) {
       /* 如果不支持信用模式了，已经打开的则关闭 */
       if (val === false) {
-        this.goods.isCreditMode = false;
-        this.goodsChange();
+        const newGoods = produce(this.goods, (goods) => {
+          goods.isCreditMode = false;
+        });
+
+        this.goodsChange(newGoods);
       }
     },
     isDirect(val) {
@@ -721,17 +735,13 @@ export default {
     maxGoodsNumber(val) {
       /* 最大数量如果小于已选的数量，则修改已选数量之 */
       if (this.goods.number > val) {
-        this.goods.number = val;
-        this.goods.productList[0].number = val;
-        this.$emit('change', this.goods, this.index);
+        this.$emit('change', this.getNumberChangeGoods(val), this.index);
       }
     },
     minGoodsNumber(val) {
       /* 最小数量如果大于已选的数量，则修改已选数量之 */
       if (this.goods.number < val) {
-        this.goods.number = val;
-        this.goods.productList[0].number = val;
-        this.$emit('change', this.goods, this.index);
+        this.$emit('change', this.getNumberChangeGoods(val), this.index);
       }
     },
   },
@@ -756,8 +766,16 @@ export default {
       const {
         checked
       } = this.goods;
-      this.goods.checked = !checked;
-      this.$emit('change', this.goods, this.index);
+      this.$emit('change', this.getChangeObject(this.goods, {
+        checked: !checked
+      }), this.index);
+    },
+    getNumberChangeGoods(num) {
+      /* 获取数量改变后的goods */
+      return produce(this.goods, (goods) => {
+        goods.number = num;
+        goods.productList[0].number = num;
+      });
     },
     handleBeforeCreditModeChange() {
       /* 检查是否支持开启信用模式 */
@@ -778,9 +796,10 @@ export default {
       }
       return state;
     },
-    goodsChange() {
+    goodsChange(newGoods) {
       /* goods chang */
-      this.$emit('change', this.goods, this.index);
+      const goods = newGoods || this.goods;
+      this.$emit('change', goods, this.index);
     },
     isCreditModeChange() {
       /* 信用模式switch change */
@@ -964,94 +983,95 @@ export default {
 
       this.specificationsList = specificationsList;
     },
-    specificationsCustomCheckFun(versionData, list, parIndex, curIndex) {
+    specificationsCustomCheckFun(oldVersionData, list, parIndex, curIndex) {
       /* 版本价格自定义check fun */
       const {
         // 不支持的版本价格类型
         notSupportPriceTypes
       } = this.goods;
-      const parent = versionData[parIndex];
-      const version = list[curIndex];
-      const {
-        priceType
-      } = version;
-      const curChecked = !version.checked;
-      // 如果取消的话,直接修改并返回
-      if (!curChecked) {
-        version.checked = false;
-        versionData[parIndex].list[curIndex] = version;
-        return versionData;
-      }
-      // 遇到不支持的版本，直接提示并返回
-      const notSupportPriceType = notSupportPriceTypes.find(v => v.type === priceType);
-      if (notSupportPriceType) {
-        uni.showModal({
-          title: '提示',
-          content: notSupportPriceType.msg
-        });
-        return versionData;
-      }
-      const checkedList = [];
-      versionData.forEach((vs) => {
-        vs.list.forEach((v, index) => {
-          if (v.checked) {
-            checkedList.push({
-              ...v,
-              $parentId: vs.id,
-              $choseIndex: index
-            });
-          }
-        });
-      });
-      // 工程、特价map
-      const map = {
-        GC: 1,
-        TJ: 1
-      };
+      const parent = oldVersionData[parIndex];
 
-      function setCheck() {
-        version.checked = true;
-        versionData[parIndex].list[curIndex] = version;
-      }
+      this.specificationsList = produce(this.specificationsList, (versionData) => {
+        // 点击的版本
+        const version = versionData[parIndex].list[curIndex];
+        const {
+          priceType
+        } = version;
+        const curChecked = !version.checked;
+        // 如果取消的话,直接修改并返回
+        if (!curChecked) {
+          version.checked = false;
+          return;
+        }
+        // 遇到不支持的版本，直接提示并返回
+        const notSupportPriceType = notSupportPriceTypes.find(v => v.type === priceType);
+        if (notSupportPriceType) {
+          uni.showModal({
+            title: '提示',
+            content: notSupportPriceType.msg
+          });
+          return;
+        }
+        const checkedList = [];
+        versionData.forEach((vs) => {
+          vs.list.forEach((v, index) => {
+            if (v.checked) {
+              checkedList.push({
+                ...v,
+                $parentId: vs.id,
+                $choseIndex: index
+              });
+            }
+          });
+        });
+        // 工程、特价map
+        const map = {
+          GC: 1,
+          TJ: 1
+        };
 
-      const checkedListLen = checkedList.length;
-      if (!checkedListLen) {
-        setCheck();
-      } else {
-        for (let i = 0; i < checkedListLen; i++) {
-          const checkVersion = checkedList[0];
-          // 父元素一致直接设置
-          if (checkVersion.$parentId === parent.id) {
-            setCheck();
-            // 取消之前的
-            versionData.find(v => v.id === parent.id).list[checkVersion.$choseIndex].checked = false;
-          } else {
-            // 工程、特价可以和版本调货共存
-            // 此处用!priceType来判断是否是版本调货
-            if ((map[checkVersion.priceType] && !priceType) || (map[priceType] && !checkVersion.priceType)) {
-              version.checked = true;
-              versionData[parIndex].list[curIndex] = version;
-              if (checkedListLen > 1) {
-                const otherKey = i === 1 ? 0 : 1;
-                // 取消另一个
-                versionData.find(v => v.id === checkedList[otherKey].$parentId).list[checkedList[otherKey].$choseIndex].checked = false;
-              }
-            } else if (checkedListLen === 1) {
+        function setCheck() {
+          version.checked = true;
+        }
+
+        const checkedListLen = checkedList.length;
+        if (!checkedListLen) {
+          setCheck();
+        } else {
+          for (let i = 0; i < checkedListLen; i++) {
+            const checkVersion = checkedList[0];
+            // 父元素一致直接设置
+            if (checkVersion.$parentId === parent.id) {
               setCheck();
               // 取消之前的
-              versionData.find(v => v.id === checkVersion.$parentId).list[checkVersion.$choseIndex].checked = false;
+              versionData.find(v => v.id === parent.id).list[checkVersion.$choseIndex].checked = false;
             } else {
-              const str = getGoodsInCartPriceType()[checkVersion.priceType] || '调货';
-              const compareStr = getGoodsInCartPriceType()[priceType] || '调货';
-              uni.showModal({
-                title: '提示',
-                content: `${str}版本和${compareStr}版本不能共存`
-              });
+              // 工程、特价可以和版本调货共存
+              // 此处用!priceType来判断是否是版本调货
+              if ((map[checkVersion.priceType] && !priceType) || (map[priceType] && !checkVersion.priceType)) {
+                version.checked = true;
+                if (checkedListLen > 1) {
+                  const otherKey = i === 1 ? 0 : 1;
+                  // 取消另一个
+                  versionData.find(v => v.id === checkedList[otherKey].$parentId).list[checkedList[otherKey].$choseIndex].checked = false;
+                }
+              } else if (checkedListLen === 1) {
+                setCheck();
+                // 取消之前的
+                versionData.find(v => v.id === checkVersion.$parentId).list[checkVersion.$choseIndex].checked = false;
+              } else {
+                const str = getGoodsInCartPriceType()[checkVersion.priceType] || '调货';
+                const compareStr = getGoodsInCartPriceType()[priceType] || '调货';
+                uni.showModal({
+                  title: '提示',
+                  content: `${str}版本和${compareStr}版本不能共存`
+                });
+                return;
+              }
             }
           }
         }
-      }
-      this.specificationsList = versionData;
+      });
     },
     specificationsChange(data) {
       /* 版本规格change */
@@ -1062,30 +1082,39 @@ export default {
       this.specificationsCheckList = checkedList;
       // 搜索调货版本
       const transfer = checkedList.find(v => !v.priceType);
-      // 选了调货版本，则数量为调货的最大数量
+      const newGoods = produce(this.goods, (goods) => {
+        // 选了调货版本，则数量为调货的最大数量
+        // todo 还有库存的判断
+        if (transfer) {
+          goods.number = transfer.num;
+          goods.productList[0].number = transfer.num;
+        }
+        goods.choseOtherVersions = checkedList;
+      });
+      this.$emit('change', newGoods, this.index);
       // todo 还有库存的判断
-      if (transfer) {
-        this.goods.number = transfer.num;
-        this.goods.productList[0].number = transfer.num;
-      }
-      this.goods.choseOtherVersions = checkedList;
-      this.$emit('change', this.goods, this.index);
+      // if (transfer) {
+      //   this.$emit('numberChange', transfer.number);
+      // }
+      // this.$emit('choseOtherVersionsChange', checkedList);
     },
     specificationsCancel() {
       /* 选中版本取消 */
       this.isShowSpecifications = false;
     },
-    goodsNumChange() {
+    goodsNumChange({ value: number }) {
       /* 商品数量change */
       // 防抖
       this.$u.debounce(() => {
         this.updateCartProductNumber({
           ...this.goods.productList[0],
           oldValue: this.goods.productList[0].number,
-          newValue: this.goods.number
+          newValue: number
         });
-        this.goods.productList[0].number = this.goods.number;
-        this.$emit('change', this.goods, this.index);
+        this.$emit('change', this.getChangeObject(this.goods, {
+          number,
+          'productList.0.number': number
+        }), this.index);
       }, 500, false);
     },
     updateCartProductNumber({
@@ -1161,18 +1190,23 @@ export default {
         // 在picker里的子版本条目index
         $choseIndex
       } = item;
-        // 重置选中状态
-      const choseItem = this.specificationsList.find(v => v.id === $parentId);
-      choseItem.list[$choseIndex].checked = false;
-      // 删除已选版本里的数据
-      const delIndex = this.goods.choseOtherVersions.find(v => v.$parentId === $parentId && v.$choseIndex === $choseIndex);
-      this.goods.choseOtherVersions.splice(delIndex, 1);
-      this.$emit('change', this.goods, this.index);
+      // 重置选中状态
+      this.specificationsList = produce(this.specificationsList, (specificationsList) => {
+        const choseItem = specificationsList.find(v => v.id === $parentId);
+        choseItem.list[$choseIndex].checked = false;
+      });
+
+      const newGoods = produce(this.goods, (goods) => {
+        // 删除已选版本里的数据
+        const delIndex = goods.choseOtherVersions.find(v => v.$parentId === $parentId && v.$choseIndex === $choseIndex);
+        goods.choseOtherVersions.splice(delIndex, 1);
+      });
+      this.$emit('change', newGoods, this.index);
     },
     genStockPickerOption() {
       /* 组合库存数据 */
       // this.stockOptions
-      const product = this.getProduct(this.goods);
+      const product = this.thisProduct;
       if (!product) {
         return;
       }

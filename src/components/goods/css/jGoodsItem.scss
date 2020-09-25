@@ -58,11 +58,12 @@
   }
 }
 
+$jGoodsItem-left-padding: 10px;
 .jGoodsItem-left {
   position: relative;
   width: 220px;
   height: 228px;
-  padding: 10px;
+  padding: $jGoodsItem-left-padding;
   flex-shrink: 0;
 
   .u-lazy-item {
@@ -74,7 +75,7 @@
     position: absolute;
     bottom: 10px;
     right: 10px;
-    width: 100%;
+    width: calc(100% - 20px);
     height: 46px;
 
     image {
