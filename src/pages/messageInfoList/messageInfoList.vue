@@ -282,7 +282,7 @@ export default {
       .message-list{
         position: absolute;
         z-index: 200;
-        right: 0px;
+        right: 24px;
         top: 180px;
       }
       .message-icon{
