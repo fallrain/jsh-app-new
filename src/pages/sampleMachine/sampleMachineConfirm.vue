@@ -160,6 +160,7 @@ export default {
   onLoad(option) {
     const { confirmInfo, address } = option;
     this.confirmInfo = JSON.parse(confirmInfo);
+    this.choosedNum = this.confirmInfo.number;
     this.currentAddress = JSON.parse(address);
     this.getpayerList();
     // 计算总价格

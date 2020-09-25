@@ -395,7 +395,7 @@ export default {
       const { code } = await this.productDetailService.productAddInter(
         this.saleInfo.customerCode,
         this.curChoseDeliveryAddress.addressCode,
-        goods.CODE
+        goods.code
       );
       if (code === '200') {
         this.goods.followState = true;
