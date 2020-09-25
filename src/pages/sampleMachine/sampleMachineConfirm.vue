@@ -160,11 +160,13 @@ export default {
   onLoad(option) {
     const { confirmInfo, address } = option;
     this.confirmInfo = JSON.parse(confirmInfo);
-    this.choosedNum = this.confirmInfo.number;
+    if (this.confirmInfo.number) {
+      this.choosedNum = this.confirmInfo.number;
+    }
     this.currentAddress = JSON.parse(address);
     this.getpayerList();
     // 计算总价格
-    this.totalMoney = (this.confirmInfo.$allPrice.UnitPrice * this.choosedNum).toFixed(2);
+    this.totalMoney = (this.confirmInfo.$allPrice.UnitPrice * Number(this.choosedNum)).toFixed(2);
     this.getUserInfById();
     console.log(this.confirmInfo);
   },
