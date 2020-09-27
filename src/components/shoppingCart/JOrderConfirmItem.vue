@@ -141,7 +141,11 @@
     <view :class="['jOrderConfirmItem-total', isCT&&'bottom-20']">
       <view class="dis-flex justify-sb flex-wrap">
         <view class="flex-grow-1 dis-flex">
-          <view v-if="orderItem.activityName&&orderItem.activityName.indexOf('反向定制')>-1" class="type-flag">反向定制</view>
+          <view v-if="orderItem.activityName" class="type-flag">
+            <view  v-if="orderItem.activityName.indexOf('反向定制')" class="type-flag">
+              反向定制
+            </view>
+          </view>
           <view v-else class="type-flag">{{activityTypeList[orderItem.activityType]}}</view>
           <view class="jOrderConfirmItem-total-text">{{orderItem.composeOrderNo}}</view>
         </view>
@@ -233,6 +237,7 @@ export default {
   },
   data() {
     return {
+      currentPayInfoData: {},
       invoicePickerShow: false,
       invoiceOptions: [],
       currentinvoiceOption: [],
@@ -288,10 +293,11 @@ export default {
     },
     payInfoData() {
       // 初始化地址信息
-      for (const key in this.payInfoData) {
+      this.currentPayInfoData = JSON.parse(JSON.stringify(this.payInfoData));
+      for (const key in this.currentPayInfoData) {
         let initcustomerCode = '';
         let offset = 0;
-        this.payInfoData[key].forEach((item, index) => {
+        this.currentPayInfoData[key].forEach((item, index) => {
           if (item.defaultFlag === '1' && item.isCanChecked) {
             initcustomerCode = item.customerCode;
             offset = index;
@@ -303,7 +309,7 @@ export default {
         if (initcustomerCode === '') {
           const arrObj = [];
           // 没有默认付款方选择第一条
-          this.payInfoData[key].forEach((item, index) => {
+          this.currentPayInfoData[key].forEach((item, index) => {
             if (item.isCanChecked) {
               const objItem = {
                 initcustomerCode: item.customerCode,
@@ -318,10 +324,10 @@ export default {
           }
         }
         // 设置付款列表
-        this.$set(this.payerOptions, key, this.payInfoData[key]);
+        this.$set(this.payerOptions, key, this.currentPayInfoData[key]);
         // 设置初始化选中地址
         this.currentchosePayerOption[0] = initcustomerCode;
-        this.$set(this.currentPayer, key, this.payInfoData[key][offset]);
+        this.$set(this.currentPayer, key, this.currentPayInfoData[key][offset]);
       }
       this.getPayerMoneyInfo();
       console.log(this.payerOptions);
@@ -329,10 +335,8 @@ export default {
       console.log(this.orderItem);
     },
     currentchosePayerOption(val) {
-      console.log(this.currentOrderNo);
       const currentPayer = this.payerOptions[this.currentOrderNo].find(v => v.customerCode === val[0]);
       this.$set(this.currentPayer, this.currentOrderNo, currentPayer);
-      console.log(this.currentPayer);
       this.orderItem.splitOrderDetailList.forEach((item) => {
         if (item.splitOrderProductList[0].isBbOrProject === true
             && (currentPayer.payerType === '98' || currentPayer.payerType === '99')) {
@@ -359,7 +363,6 @@ export default {
       if (this.billInfoList.length === 0) {
         return;
       }
-      console.log(this.billInfoList);
       this.currentinvoiceOption = [];
       this.invoiceOptions = this.billInfoList;
       this.currentinvoiceOption[0] = this.invoiceOptions[0].key;
