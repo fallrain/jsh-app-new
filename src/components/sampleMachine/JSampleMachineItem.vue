@@ -58,6 +58,7 @@
 import MToast from '@/components/plugin/xuan-popup_2.2/components/xuan-popup/xuan-popup.vue';
 import './css/JSampleMachineItem.scss';
 import JNumberBox from '../common/JNumberBox';
+import followGoodsMixin from '@/mixins/goods/followGoods.mixin';
 
 export default {
   name: 'jSampleMachine',
@@ -65,6 +66,9 @@ export default {
     JNumberBox,
     MToast
   },
+  mixins: [
+    followGoodsMixin
+  ],
   props: {
     // 商品对象
     goods: {
@@ -126,8 +130,37 @@ export default {
       const {
         $favorite
       } = this.goods;
+      /* 切换关注状态 */
+      if ($favorite) {
+        this.unFollowGoods();
+      } else {
+        this.followGoods();
+      }
       this.goods.$favorite = !$favorite;
       this.$emit('change', this.goods, this.index);
+    },
+    async followGoods() {
+      /* 添加关注 */
+      const {
+        saletoCode: customerCode
+      } = this;
+      console.log(customerCode)
+      await this.$mFollowGoods({
+        customerCode,
+        productCode: this.goods.productCode
+      });
+      this.$emit('update:followState', true);
+    },
+    async unFollowGoods() {
+      /* 取消关注 */
+      const {
+        saletoCode: customerCode
+      } = this;
+      await this.$mUnFollowGoods({
+        customerCode,
+        productCodeList: [this.goods.productCode]
+      });
+      this.$emit('update:followState', false);
     },
     buyNow() {
       console.log(this.goods);

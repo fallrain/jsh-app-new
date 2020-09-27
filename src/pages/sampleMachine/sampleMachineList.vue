@@ -398,8 +398,8 @@ export default {
         goods.code
       );
       if (code === '200') {
-        this.goods.followState = true;
-        this.$emit('change', this.goods, this.index);
+        goods.followState = true;
+        this.$emit('change', goods, this.index);
       }
     },
     async followGoods() {
