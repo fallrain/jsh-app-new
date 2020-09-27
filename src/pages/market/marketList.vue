@@ -120,6 +120,7 @@ import mescrollMixin from '@/components/plugin/mescroll-uni/mescroll-mixins';
 import selfMescrollMixin from '@/mixins/mescroll.mixin';
 import './css/marketList.scss';
 import {
+  mapMutations,
   mapGetters
 } from 'vuex';
 import {
@@ -294,6 +295,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      USER.UPDATE_DEFAULT_SEND_TO
+    ]),
     async init() {
       // await this.getAddressList();
       await this.getIndustryList();
@@ -422,6 +426,15 @@ export default {
     changeAddress(addList, current) {
       this.addressList = addList;
       this.currentAdd = current;
+      // 更改默认的送达方
+      this.customerService.changeDefaultSendTo({
+        sendToCode: current.customerCode
+      }).then(({ code }) => {
+        if (code === '1') {
+          // 更改成功之后更新store
+          this[USER.UPDATE_DEFAULT_SEND_TO](current);
+        }
+      });
     },
     tabClick(tabs, tab) {
       if (tab.handler) {
