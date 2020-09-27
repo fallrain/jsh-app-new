@@ -611,8 +611,8 @@ export default {
         const shoppingList = [];
         // 失效商品
         const failureGoodsList = [];
-        if (data) {
-          data.forEach((v) => {
+        if (data && data.others) {
+          data.others.forEach((v) => {
             if (v.composeEnable === 1) {
               shoppingList.push({
                 ...v,
