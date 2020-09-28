@@ -3,7 +3,7 @@
     <view class="marketDetail-order-infor mb24">
       <view class="market-detail-head">
         <view class="title">
-          名称：{{currentDetail.name}}
+          名称：{{currentDetail.name || currentDetail.promotionName || ''}}
         </view>
         <view class="market-type-info">
           <view v-if="currentDetail.activityType === 'taocan'" class="type-info-item">
@@ -18,7 +18,7 @@
               活动结束时间：
             </view>
             <view class="type-item-right">
-              {{fomrmateDate(currentDetail.endDate)}}
+              {{formateDate(currentDetail.endDate) || formateDate(currentDetail.expTime) || ''}}
             </view>
           </view>
         </view>
@@ -104,9 +104,12 @@ import JProductItem from '../../components/market/JProductItem';
 import JProductBtm from '../../components/market/JProductBtm';
 import JAddressPicker from '../../components/shoppingCart/JAddressPicker';
 import {
-  mapGetters
+  mapGetters,
+  mapActions,
+  mapMutations
 } from 'vuex';
 import {
+  ACTIVITY,
   USER
 } from '../../store/mutationsTypes';
 
@@ -182,12 +185,11 @@ export default {
       isShowAdsPicker: false
     };
   },
-  onLoad(option) {
-    const { item, saletoCode, sendtoCode } = option;
-    this.currentDetail = JSON.parse(item);
+  onLoad() {
+    this.currentDetail = this.activityDetail;
     console.log(this.currentDetail);
-    this.stockForm.saletoCode = saletoCode;
-    this.stockForm.sendtoCode = sendtoCode;
+    this.stockForm.saletoCode = this.saleInfo.customerCode;
+    this.stockForm.sendtoCode = this.defaultSendToInf.customerCode;
     this.initpage();
     if (this.currentDetail.activityType === 'zuhe') {
       this.getTotalMoney();
@@ -202,13 +204,13 @@ export default {
         this.lowestPBMoney = money;
       }
     }
-    this.getAllStock();
   },
   computed: {
     ...mapGetters({
       userInf: USER.GET_USER,
       saleInfo: USER.GET_SALE,
-      defaultSendToInf: USER.GET_DEFAULT_SEND_TO
+      defaultSendToInf: USER.GET_DEFAULT_SEND_TO,
+      activityDetail: ACTIVITY.GET_ACTIVITY
     }),
     computeMain() {
       // 主产品比例
@@ -265,11 +267,20 @@ export default {
       }
       return PBnum;
     },
-    fomrmateDate() {
-      return val => val.split(' ')[0];
-    }
   },
   methods: {
+    ...mapMutations([
+      USER.UPDATE_DEFAULT_SEND_TO
+    ]),
+    ...mapActions([
+      USER.UPDATE_DEFAULT_SEND_TO_ASYNC
+    ]),
+    formateDate(val) {
+      if (val) {
+        return val.split(' ')[0];
+      }
+      return '';
+    },
     getSmallest() {
       let small = 0;
       this.currentDetail.products.forEach((item) => {
@@ -286,6 +297,7 @@ export default {
     async initpage() {
       await this.getAddressList();
       await this.getWarehouse();
+      await this.getAllStock();
     },
     // 获取所有产品的库存
     async getAllStock() {
@@ -378,7 +390,8 @@ export default {
     // 获取所有地址
     async getAddressList() {
       // 获取地址
-      const { code, data } = await this.customerService.addressesList('1');
+      const { code, data } = await this[USER.UPDATE_DEFAULT_SEND_TO_ASYNC]();
+      // const { code, data } = await this.customerService.addressesList('1');
       if (code === '1') {
         const detail = data.map(v => ({
           sendtoCode: v.addressCode,

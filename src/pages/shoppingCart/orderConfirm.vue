@@ -11,7 +11,7 @@
       :sendtoAddress="dataInfo.sendtoAddress"
       @change="choseSendType"
     ></j-order-confirm-address>
-    <view v-if="dataInfo.composeProductList.length > 0" class="orderConfirm-list">
+    <view v-if="dataInfo.composeProductList" class="orderConfirm-list">
       <j-order-confirm-item
         v-for="(orderItem,index) in dataInfo.composeProductList"
         :key="index"
@@ -20,12 +20,12 @@
         @change="goodsChange"
         @payerMoneyInfo="dealPayerMoneyInfo"
         :orderItem="orderItem"
-        :payInfoData.sync="payInfoData"
+        :payInfoData="payInfoData"
         :billInfoList.sync="billInfoList"
         :sendType="formSubmit.deliveryType"
       ></j-order-confirm-item>
     </view>
-    <view v-if="dataInfo.disableComposeProductList.length > 0" class="mt24">
+    <view v-if="dataInfo.disableComposeProductList" class="mt24">
       <j-failure-order-item
         v-for="(orderItem,index) in dataInfo.disableComposeProductList"
         :key="index"
@@ -50,13 +50,13 @@
           @tap="cancle"
         >取消订单</button>
         <button
-          v-if="dataInfo.composeProductList.length > 0"
+          v-if="dataInfo.composeProductList"
           type="button"
           class="orderConfirm-btm-btn-sure ml20"
           @tap="next"
         >提交订单</button>
         <button
-          v-if="dataInfo.disableComposeProductList.length > 0"
+          v-if="dataInfo.disableComposeProductList"
           type="button"
           class="orderConfirm-btm-btn-sure ml20"
           @tap="goIndex"
@@ -186,6 +186,7 @@ export default {
   },
   onLoad(option) {
     if (option.formData) {
+      debugger
       this.formData = JSON.parse(option.formData);
       this.formSubmit.saletoCode = this.formData.saletoCode;
       this.onLoadInit();
@@ -403,15 +404,11 @@ export default {
       const condition = this.getPayForm();
       const { code, data } = await this.orderService.paytoInfo(condition);
       if (code === '1') {
-        /* for (const k in data) {
-          data[k][0].isCanChecked = false;
-        } */
-        this.payInfoData = data;
         let payList = [];
-        // 处理账户余额信息
-        for (const k in this.payInfoData) {
-          payList = payList.concat(this.payInfoData[k]);
+        for (const k in data) {
+          payList = payList.concat(data[k]);
         }
+        this.payInfoData = data
         this.allPayer = payList;
       }
     },
@@ -495,8 +492,6 @@ export default {
         });
         return;
       }
-
-      console.log(this.payerMoneyList);
       let state = true;
       if (this.payerMoneyList.length === 0) {
         uni.showToast({
@@ -519,8 +514,6 @@ export default {
       if (!state) {
         return;
       }
-      console.log(this.dataInfo);
-      console.log(this.totalPayerMoneyInfo);
       // 根据拆单结果组合订单提交信息
       const orderList = [];
       const groupingArr = [];

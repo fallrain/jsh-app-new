@@ -20,7 +20,7 @@
       <button
         @tap="goOrder(true)"
         type="button"
-        class="jProductBtm-right-btn"
+        class="jProductBtm-right-btn active"
       >成套下单</button>
     </view>
     <view v-if="groupType === 'taocan'" class="jProductBtm-right">

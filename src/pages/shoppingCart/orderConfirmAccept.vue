@@ -136,7 +136,7 @@ export default {
       console.log(this.wholeorderData);
 
       // 处理成功失败数量
-      this.computeOrderNum();
+      this.computeSampleMachineOrderNum();
     }
   },
   methods: {

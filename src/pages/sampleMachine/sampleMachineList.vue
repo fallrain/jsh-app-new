@@ -96,7 +96,7 @@ import {
   getGoodsType
 } from '@/lib/dataDictionary';
 import {
-  mapGetters
+  mapGetters, mapMutations
 } from 'vuex';
 import {
   USER
@@ -210,6 +210,9 @@ export default {
     }),
   },
   methods: {
+    ...mapMutations([
+      USER.UPDATE_DEFAULT_SEND_TO
+    ]),
     async init() {
       await this.getAddressList();
       await this.queryBrandAndInvsort();
@@ -392,11 +395,11 @@ export default {
       const { code } = await this.productDetailService.productAddInter(
         this.saleInfo.customerCode,
         this.curChoseDeliveryAddress.addressCode,
-        goods.CODE
+        goods.code
       );
       if (code === '200') {
-        this.goods.followState = true;
-        this.$emit('change', this.goods, this.index);
+        goods.followState = true;
+        this.$emit('change', goods, this.index);
       }
     },
     async followGoods() {
@@ -514,6 +517,15 @@ export default {
       /* 地址数据改变 */
       this.deliveryAddressList = list;
       this.curChoseDeliveryAddress = item;
+      // 更改默认的送达方
+      this.customerService.changeDefaultSendTo({
+        sendToCode: item.customerCode
+      }).then(({ code }) => {
+        if (code === '1') {
+          // 更改成功之后更新store
+          this[USER.UPDATE_DEFAULT_SEND_TO](item);
+        }
+      });
     },
     sampleMachineConfirm(confirmInfo) {
       const address = JSON.stringify(this.curChoseDeliveryAddress);

@@ -21,7 +21,7 @@
           v-for="(item,index) in list"
           :key="index"
           :activity="item"
-          @activityDetail ="activityDetail"
+          @activityDetail="activityDetail"
           @goOrder ="goOrder"
           @getNum="getNum"
         ></j-activity-item>
@@ -120,10 +120,12 @@ import mescrollMixin from '@/components/plugin/mescroll-uni/mescroll-mixins';
 import selfMescrollMixin from '@/mixins/mescroll.mixin';
 import './css/marketList.scss';
 import {
+  mapActions,
+  mapMutations,
   mapGetters
 } from 'vuex';
 import {
-  USER
+  USER, ACTIVITY
 } from '../../store/mutationsTypes';
 
 export default {
@@ -161,6 +163,7 @@ export default {
         sendtoCode: '',
         productCodes: []
       },
+      isLoadAddress: false,
       // 活动列表
       list: [
       ],
@@ -259,7 +262,7 @@ export default {
     };
   },
   beforeMount() {
-    this.getAddressList();
+    // this.getAddressList();
   },
   onLoad(option) {
     if (option.productCode) {
@@ -294,6 +297,13 @@ export default {
     }
   },
   methods: {
+    ...mapMutations([
+      USER.UPDATE_DEFAULT_SEND_TO,
+      ACTIVITY.UPDATE_ACTIVITY
+    ]),
+    ...mapActions([
+      USER.UPDATE_DEFAULT_SEND_TO_ASYNC
+    ]),
     async init() {
       // await this.getAddressList();
       await this.getIndustryList();
@@ -333,10 +343,12 @@ export default {
             icon: 'none'
           });
         }
+      } else {
+        this.mescroll.endErr();
       }
       // 当前页码的数据
       const scrollView = {};
-      scrollView.pageSize = 10;
+      scrollView.pageSize = data.pageSize;
       scrollView.total = data.total;
       return scrollView;
     },
@@ -400,7 +412,8 @@ export default {
     },
     async getAddressList() {
       // 获取地址
-      const { code, data } = await this.customerService.addressesList('1');
+      const { code, data } = await this[USER.UPDATE_DEFAULT_SEND_TO_ASYNC]();
+      // const { code, data } = await this.customerService.addressesList('1');
       if (code === '1') {
         this.addressList = data;
       }
@@ -418,10 +431,21 @@ export default {
       }
       this.form.sendtoCode = this.currentAdd.addressCode;
       this.stockForm.sendtoCode = this.currentAdd.addressCode;
+      this.isLoadAddress = true;
+      return true;
     },
     changeAddress(addList, current) {
       this.addressList = addList;
       this.currentAdd = current;
+      // 更改默认的送达方
+      this.customerService.changeDefaultSendTo({
+        sendToCode: current.customerCode
+      }).then(({ code }) => {
+        if (code === '1') {
+          // 更改成功之后更新store
+          this[USER.UPDATE_DEFAULT_SEND_TO](current);
+        }
+      });
     },
     tabClick(tabs, tab) {
       if (tab.handler) {
@@ -436,6 +460,9 @@ export default {
     },
     async upCallback(pages) {
       /* 上推加载 */
+      if (!this.isLoadAddress) {
+        await this.getAddressList();
+      }
       const scrollView = await this.getActivityList(pages);
       this.mescroll.endBySize(scrollView.pageSize, scrollView.total);
     },
@@ -494,10 +521,9 @@ export default {
     },
     async activityDetail(currentInfo) {
       const detail = await this.getAllStock(currentInfo);
-      console.log(detail);
+      this[ACTIVITY.UPDATE_ACTIVITY](detail);
       uni.navigateTo({
-        url: `/pages/market/marketDetail?item=${JSON.stringify(detail)}
-        &saletoCode=${this.form.saletoCode}&sendtoCode=${this.form.sendtoCode}`
+        url: '/pages/market/marketDetail'
       });
     },
     // 获取所有产品的库存

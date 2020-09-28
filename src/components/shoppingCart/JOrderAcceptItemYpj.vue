@@ -26,10 +26,13 @@
         小计：{{orderItem.IBL_SUMMONEY}}
       </view>
       <view class="item-content">
-        下单时间：{{orderItem.IBL_CREATETIME}}
+        下单时间：{{formateDate(orderItem.IBL_CREATETIME.time)}}
       </view>
       <view class="item-content">
         订单状态：{{orderItem.ISFLAG}}
+      </view>
+      <view v-if="orderItem.IBL_ERRORMESSAGE" class="item-content">
+        失败原因：{{orderItem.IBL_ERRORMESSAGE}}
       </view>
     </view>
   </view>
@@ -76,6 +79,9 @@ export default {
   onLoad() {
   },
   computed: {
+    formateDate() {
+      return value => this.jshUtil.formatDate(value);
+    }
   },
   methods: {
     orderDetail() {

@@ -4,11 +4,11 @@
     <view class="product-info">
       <view class="product-info-top ">
         <view class="sampleMachineConfirm-img-wrap">
-          <image :src="confirmInfo.SEARCHIMAGE"></image>
+          <image :src="confirmInfo.searchImage"></image>
         </view>
         <view class="sampleMachineConfirm-inf">
           <view class="sampleMachineConfirm-inf-title">
-            {{confirmInfo.NAME}}
+            {{confirmInfo.name}}
           </view>
           <view class="dis-flex justify-sb">
             <view class="sampleMachineConfirm-price">
@@ -17,7 +17,7 @@
             <j-number-box
               v-if="confirmInfo.detailList"
               :min="0"
-              :max="confirmInfo.detailList[0].YGS_KYKCL"
+              :max="confirmInfo.detailList[0].ygsKykcl"
               v-model="choosedNum"
               @change="change"
             ></j-number-box>
@@ -31,10 +31,10 @@
           <text>开票价：￥{{confirmInfo.$allPrice.UnitPrice }}</text>
         </view>
         <view v-if="confirmInfo.detailList">
-          库存：{{confirmInfo.detailList[0].YGS_KYKCL}}
+          库存：{{confirmInfo.detailList[0].ygsKykcl}}
         </view>
         <view>
-          库位：({{confirmInfo.detailList[0].YGS_LGORT}}){{confirmInfo.detailList[0].YGS_LGOBE}}
+          库位：({{confirmInfo.detailList[0].ygsLgort}}){{confirmInfo.detailList[0].ygsLgobe}}
         </view>
       </view>
     </view>
@@ -160,17 +160,20 @@ export default {
   onLoad(option) {
     const { confirmInfo, address } = option;
     this.confirmInfo = JSON.parse(confirmInfo);
+    if (this.confirmInfo.number) {
+      this.choosedNum = this.confirmInfo.number;
+    }
     this.currentAddress = JSON.parse(address);
     this.getpayerList();
     // 计算总价格
-    this.totalMoney = (this.confirmInfo.$allPrice.UnitPrice * this.choosedNum).toFixed(2);
+    this.totalMoney = (this.confirmInfo.$allPrice.UnitPrice * Number(this.choosedNum)).toFixed(2);
     this.getUserInfById();
     console.log(this.confirmInfo);
   },
   onShow() {
-    const _this = this;
+    const that = this;
     setTimeout(() => {
-      _this.init();
+      that.init();
     }, 1000);
   },
   computed: {
@@ -203,7 +206,7 @@ export default {
         'T', 'U', 'V', 'W', 'S', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'
       ];
       let str = '';
-      for (var i = 0; i < 4; i++) {
+      for (let i = 0; i < 4; i++) {
         const c = pool[this.rn(0, pool.length - 1)];
         const deg = this.rn(-30, 30);
         context.setFontSize(18);
@@ -220,7 +223,7 @@ export default {
         key: 'imgcode',
         data: str,
       });
-      for (var i = 0; i < 40; i++) {
+      for (let i = 0; i < 40; i++) {
         context.beginPath();
         context.arc(this.rn(0, w), this.rn(0, h), 1, 0, 2 * Math.PI);
         context.closePath();
