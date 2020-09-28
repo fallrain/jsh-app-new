@@ -438,10 +438,13 @@ export default {
       // 远周次数据
       weekOptions: [],
       // 选择的远周次key
-      choseWeekKeys: ['']
+      choseWeekKeys: [''],
+      // 创建的次数
+      createdNum: 0
     };
   },
   created() {
+    this.createdNum++;
     this.setPageInf();
   },
   computed: {
@@ -681,7 +684,8 @@ export default {
   },
   watch: {
     versionPrice(val, oldVal) {
-      if (JSON.stringify(val) !== JSON.stringify(oldVal)) {
+      // 只要是第一次创建，则一定渲染（下拉刷新的时候，组件重新创建，但是versionPrice值相同，但是specificationsList却在data里初始化为[]）
+      if (this.createdNum === 1 || JSON.stringify(val) !== JSON.stringify(oldVal)) {
         this.genSpecificationsList();
         this.setFollowState();
         this.genWeekOptions();
