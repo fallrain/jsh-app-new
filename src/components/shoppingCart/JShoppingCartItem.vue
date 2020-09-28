@@ -136,9 +136,9 @@
             v-if="isCreditModel"
           >
             <j-switch
-              :active.sync="goods.isCreditMode"
+              :active="goods.isCreditMode"
               :beforeChange="handleBeforeCreditModeChange"
-              @change="isCreditModeChange"
+              @change="switchModeChange('isCreditMode',$event)"
             >
             </j-switch>
             <text class="jShoppingCartItem-btm-switch-text mr32 ml8">信用模式</text>
@@ -148,8 +148,8 @@
             v-if="isFundsFirst"
           >
             <j-switch
-              :active.sync="goods.isFundsFirstMode"
-              @change="goodsChange()"
+              :active="goods.isFundsFirstMode"
+              @change="switchModeChange('isFundsFirstMode',$event)"
             >
             </j-switch>
             <text class="jShoppingCartItem-btm-switch-text mr32 ml8">款先</text>
@@ -160,7 +160,7 @@
           >
             <j-switch
               :active.sync="goods.isDirectMode"
-              @change="isDirectModeChange"
+              @change="switchModeChange('isDirectMode',$event)"
             >
             </j-switch>
             <text class="jShoppingCartItem-btm-switch-text mr32 ml8">直发</text>
@@ -171,7 +171,7 @@
           >
             <j-switch
               :active.sync="goods.isWeekMode"
-              @change="isWeekModeChange"
+              @change="switchModeChange('isWeekMode',$event)"
             >
             </j-switch>
             <text
@@ -451,6 +451,7 @@ export default {
     },
     sdsds() {
       /* 获取产品 */
+      // todo 纯测试用，待删除
       return this.goods.activityId;
     },
     stockNum() {
@@ -689,19 +690,14 @@ export default {
     isCreditModel(val) {
       /* 如果不支持信用模式了，已经打开的则关闭 */
       if (val === false) {
-        const newGoods = produce(this.goods, (goods) => {
-          goods.isCreditMode = false;
-        });
-
-        this.goodsChange(newGoods);
+        this.switchModeChange('isCreditMode', false);
       }
     },
     isDirect(val) {
       /* 如果不支持直发模式了，已经打开的则关闭 */
       if (val === false) {
-        this.goods.isDirectMode = false;
-        this.goodsChange();
-        const transfer = this.specificationsList.find(v => v.id === 'transfer');
+        this.switchModeChange('isDirectMode', false);
+        const transfer = this.specificationsList.find(v => v.id === 'example');
         if (transfer) {
           transfer.isHide = false;
         }
@@ -735,13 +731,13 @@ export default {
     maxGoodsNumber(val) {
       /* 最大数量如果小于已选的数量，则修改已选数量之 */
       if (this.goods.number > val) {
-        this.$emit('change', this.getNumberChangeGoods(val), this.index);
+        this.$emit('numberChange', val, this.index);
       }
     },
     minGoodsNumber(val) {
       /* 最小数量如果大于已选的数量，则修改已选数量之 */
       if (this.goods.number < val) {
-        this.$emit('change', this.getNumberChangeGoods(val), this.index);
+        this.$emit('numberChange', val, this.index);
       }
     },
   },
@@ -766,15 +762,8 @@ export default {
       const {
         checked
       } = this.goods;
-      this.$emit('change', this.getChangeObject(this.goods, {
+      this.$emit('propertyChange', {
         checked: !checked
-      }), this.index);
-    },
-    getNumberChangeGoods(num) {
-      /* 获取数量改变后的goods */
-      return produce(this.goods, (goods) => {
-        goods.number = num;
-        goods.productList[0].number = num;
       });
     },
     handleBeforeCreditModeChange() {
@@ -801,17 +790,11 @@ export default {
       const goods = newGoods || this.goods;
       this.$emit('change', goods, this.index);
     },
-    isCreditModeChange() {
-      /* 信用模式switch change */
-      this.goodsChange();
-    },
-    isDirectModeChange() {
-      /* 直发模式switch change */
-      this.$emit('change', this.goods, this.index);
-    },
-    isWeekModeChange() {
-      /* 远周次模式switch change */
-      this.$emit('change', this.goods, this.index);
+    switchModeChange(propertyName, val) {
+      /* switch change */
+      this.$emit('propertyChange', {
+        [propertyName]: val
+      });
     },
     showSpecifications() {
       /* 显示版本规格 */
@@ -1082,21 +1065,11 @@ export default {
       this.specificationsCheckList = checkedList;
       // 搜索调货版本
       const transfer = checkedList.find(v => !v.priceType);
-      const newGoods = produce(this.goods, (goods) => {
-        // 选了调货版本，则数量为调货的最大数量
-        // todo 还有库存的判断
-        if (transfer) {
-          goods.number = transfer.num;
-          goods.productList[0].number = transfer.num;
-        }
-        goods.choseOtherVersions = checkedList;
-      });
-      this.$emit('change', newGoods, this.index);
       // todo 还有库存的判断
-      // if (transfer) {
-      //   this.$emit('numberChange', transfer.number);
-      // }
-      // this.$emit('choseOtherVersionsChange', checkedList);
+      if (transfer) {
+        this.$emit('numberChange', transfer.number);
+      }
+      this.$emit('choseOtherVersionsChange', checkedList);
     },
     specificationsCancel() {
       /* 选中版本取消 */
@@ -1111,10 +1084,7 @@ export default {
           oldValue: this.goods.productList[0].number,
           newValue: number
         });
-        this.$emit('change', this.getChangeObject(this.goods, {
-          number,
-          'productList.0.number': number
-        }), this.index);
+        this.$emit('numberChange', number);
       }, 500, false);
     },
     updateCartProductNumber({
@@ -1196,12 +1166,11 @@ export default {
         choseItem.list[$choseIndex].checked = false;
       });
 
-      const newGoods = produce(this.goods, (goods) => {
-        // 删除已选版本里的数据
-        const delIndex = goods.choseOtherVersions.find(v => v.$parentId === $parentId && v.$choseIndex === $choseIndex);
-        goods.choseOtherVersions.splice(delIndex, 1);
-      });
-      this.$emit('change', newGoods, this.index);
+      // 删除已选版本里的数据
+      const delIndex = this.goods.choseOtherVersions.findIndex(v => v.$parentId === $parentId && v.$choseIndex === $choseIndex);
+      if (delIndex > -1) {
+        this.$emit('choseOtherVersionsDel', delIndex);
+      }
     },
     genStockPickerOption() {
       /* 组合库存数据 */

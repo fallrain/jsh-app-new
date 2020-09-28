@@ -731,6 +731,7 @@ export default {
           this.deliveryAddressList = data.map(v => ({
             id: v.customerCode,
             name: `(${v.customerCode})${v.address}`,
+            checked: false,
             ...v
           }));
           // 当前配送地址修改(选出默认地址)

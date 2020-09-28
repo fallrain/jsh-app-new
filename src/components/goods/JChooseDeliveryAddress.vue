@@ -45,7 +45,7 @@
                 class="iconfont icontick"
               ></i>
             </view>
-            <view class="jChooseDeliveryAddressDrawer-item-cnt">{{item.name}}</view>
+            <view class="jChooseDeliveryAddressDrawer-item-cnt">({{item.addressCode}}){{item.address}}</view>
           </view>
         </scroll-view>
       </view>
@@ -114,9 +114,9 @@ export default {
     check(item) {
       /* 选中一个条目 */
       this.list.forEach((v) => {
-        this.$set(v, 'checked', false);
+        v.checked = false;
       });
-      this.$set(item, 'checked', true);
+      item.checked = true;
       this.$emit('change', this.list, item);
     },
     hide() {
@@ -171,7 +171,7 @@ export default {
 
   .jChooseDeliveryAddressDrawer-list {
     padding-top: 18px;
-    height: calc(100% - 42px);
+    height: calc(100% - 100px);
   }
 
   .jChooseDeliveryAddressDrawer-item {

@@ -57,6 +57,8 @@
             @change="goodsChange"
             @choseOtherVersionsChange="choseOtherVersionsChange($event,index)"
             @numberChange="numberChange($event,index)"
+            @choseOtherVersionsDel="choseOtherVersionsDel($event,index)"
+            @propertyChange="propertyChange($event,index)"
             @del="singleDeleteCart"
             @sign="toSign"
             @updateNumber="refreshShoppingCartList"
@@ -91,6 +93,8 @@
             @change="goodsChange"
             @choseOtherVersionsChange="choseOtherVersionsChange($event,index)"
             @numberChange="numberChange($event,index)"
+            @choseOtherVersionsDel="choseOtherVersionsDel($event,index)"
+            @propertyChange="propertyChange($event,index)"
             @del="singleDeleteCart"
             @updateNumber="refreshShoppingCartList"
             @sign="toSign"
@@ -543,9 +547,7 @@ export default {
       }
       this.shoppingList = shoppingList;
       // 更新底栏
-      if (this.isCheckAll) {
-        this.updateTotal();
-      }
+      this.updateTotal();
       this.isIndustryPickerShow = false;
     },
     resetBtmInf() {
@@ -684,9 +686,7 @@ export default {
     goodsChange(goods, index) {
       /* 商品数据change */
       this.$set(this.shoppingList, index, goods);
-      if (this.isCheckAll) {
-        this.updateTotal();
-      }
+      this.updateTotal();
     },
     updateTotal() {
       /* 更新底栏统计 */
@@ -939,9 +939,7 @@ export default {
         });
       }
       // 更新底栏
-      if (this.isCheckAll) {
-        this.updateTotal();
-      }
+      this.updateTotal();
     },
     addFailureGoodsList(goods) {
       /* 失效产品增加数据 */
@@ -1301,6 +1299,14 @@ export default {
     choseOtherVersionsChange(checkedList, index) {
       /* 选择的版本change */
       this.shoppingList[index].choseOtherVersions = checkedList;
+    },
+    choseOtherVersionsDel(delIndex, index) {
+      /* 选择的版本删除操作 */
+      this.shoppingList[index].choseOtherVersions.splice(delIndex, 1);
+    },
+    propertyChange(val, index) {
+      /* 单个属性改变 */
+      this.changeObject(this.shoppingList[index], val);
     }
   }
 };

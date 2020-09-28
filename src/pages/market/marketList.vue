@@ -102,8 +102,9 @@
       </view>
     </j-drawer>
     <j-choose-delivery-address
-      :addressList="addressList"
+      :activeItemName="'item'+currentAdd.customerCode"
       :show.sync="isShowAddressDrawer"
+      :list="addressList"
       @changeAddress="changeAddress"
     ></j-choose-delivery-address>
   </view>
@@ -114,7 +115,7 @@
 import JDrawer from '../../components/form/JDrawer';
 import JActivityItem from '../../components/market/JActivityItem';
 import JMarketHeadTab from '../../components/market/JMarketHeadTab';
-import JChooseDeliveryAddress from '../../components/market/JChooseDeliveryAddress';
+import JChooseDeliveryAddress from '../../components/goods/JChooseDeliveryAddress';
 import MescrollBody from '@/components/plugin/mescroll-uni/mescroll-body.vue';
 import mescrollMixin from '@/components/plugin/mescroll-uni/mescroll-mixins';
 import selfMescrollMixin from '@/mixins/mescroll.mixin';
