@@ -133,6 +133,7 @@
       <j-address-picker
         :show.sync="isShowAdsPicker"
         :pickerList="sendCustomerList"
+        :expandIndexMap.sync="expandIndexMap"
         :beforeCheck="adsPickerBeforeCheck"
         :beforeCheckParent="adsPickerBeforeCheckParent"
         @change="sendCustomerListChange"
@@ -259,6 +260,10 @@ export default {
       isShowAdsPicker: false,
       // 送达方数据
       sendCustomerList: [],
+      // 送达方数据扩展的数据下标
+      expandIndexMap: {
+        2: true
+      },
       // 异地云仓数据
       offSiteData: [],
       // 选中的送达方cy
@@ -400,6 +405,7 @@ export default {
       // 购物车列表
       const getShoppingCartList = this.getShoppingCartList();
       // 获取特价版本
+      this.versionPrice = {};
       const getSpecialPrice = this.getSpecialPrice();
       // 重置购物车数量
       const updateCartNum = this.updateCartNum();

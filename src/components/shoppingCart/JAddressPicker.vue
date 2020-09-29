@@ -35,13 +35,13 @@
                 class="jAddressPicker-cnt-item-text"
               >{{item.name}}</text>
               <view
-                :class="['jAddressPicker-cnt-item-head-icon iconfont iconxia', !item.isExpand && 'active']"
-                @tap="toggleExpand(item,index)"
+                :class="['jAddressPicker-cnt-item-head-icon iconfont iconxia', expandIndexMap[index] && 'active']"
+                @tap="toggleExpand(index)"
                 v-if="item.children"
               ></view>
             </view>
             <block
-              v-if="item.children && item.isExpand"
+              v-if="item.children && expandIndexMap[index]"
             >
               <view class="jAddressPicker-search-wrap">
                 <j-search-input
@@ -65,7 +65,7 @@
                         item.childrenType==='short' && 'short'
                       ]"
                       :key="dIndex"
-                      @tap.stop="checkDetail(detail,item.children,item,index)"
+                      @tap.stop="checkDetail(detail,item.children,item,index,dIndex)"
                     >
                       <view
                         class="jVersionSpecifications-pop-detail-item-check"
@@ -87,6 +87,9 @@
 </template>
 
 <script>
+import {
+  produce
+} from 'immer';
 import JSearchInput from '../form/JSearchInput';
 import './css/jAddressPicker.scss';
 
@@ -122,7 +125,6 @@ export default {
     //     // 是否能被点击
     //     isCanBeCheck: false,
     //     checked: false,
-    //     isExpand: true,
     //     // 是否支持搜索
     //     isShowSearch: true,
     //     children: [
@@ -136,7 +138,6 @@ export default {
     //   {
     //     name: '配送至',
     //     checked: false,
-    //     isExpand: true,
     //     childrenType: 'long',
     //     // 是否支持搜索
     //     isShowSearch: true,
@@ -158,6 +159,11 @@ export default {
     },
     beforeCheck: {
       type: Function
+    },
+    // 扩展的条目的下标
+    expandIndexMap: {
+      type: Object,
+      default: () => {}
     }
   },
   data() {
@@ -189,7 +195,7 @@ export default {
         }
         this.reset(index);
         item.checked = true;
-        this.$emit('change', this.pickerList, null, item, !item.isSingle);
+        this.$emit('change', JSON.parse(JSON.stringify(this.pickerList)), null, item, !item.isSingle);
       }
     },
     reset(index) {
@@ -223,12 +229,17 @@ export default {
       if (this.isCanBeCheck && !parent.checked) {
         this.choose(parent, parIndex);
       }
-      this.$emit('change', this.pickerList, item, parent);
+      this.$emit('change', produce(this.pickerList, () => {
+      }), item, parent);
     },
-    toggleExpand(item) {
+    toggleExpand(index) {
       /* 展开收起 */
-      item.isExpand = !item.isExpand;
-      this.$emit('change', this.pickerList, null, item, true, 'expand');
+      const expandIndexMap = {
+        ...this.expandIndexMap
+      };
+      expandIndexMap[index] = !expandIndexMap[index];
+      this.$emit('update:expandIndexMap', expandIndexMap);
+      // this.$emit('change', this.pickerList, null, item, true, 'expand');
     },
     search(item) {
       /* 搜索功能 */

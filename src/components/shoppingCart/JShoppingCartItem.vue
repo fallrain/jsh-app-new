@@ -159,7 +159,7 @@
             v-if="isDirect"
           >
             <j-switch
-              :active.sync="goods.isDirectMode"
+              :active="goods.isDirectMode"
               @change="switchModeChange('isDirectMode',$event)"
             >
             </j-switch>
@@ -170,7 +170,7 @@
             v-if="isWeek"
           >
             <j-switch
-              :active.sync="goods.isWeekMode"
+              :active="goods.isWeekMode"
               @change="switchModeChange('isWeekMode',$event)"
             >
             </j-switch>
@@ -212,9 +212,11 @@
           >
             <view
               v-if="inf.$origin==='update'"
+              class="jShoppingCartItem-btm-inf-close"
               @tap="handleDelVersion(inf)"
-              class="jShoppingCartItem-btm-inf-close iconfont iconcross"
-            ></view>
+            >
+              <view class="iconfont iconcross"></view>
+            </view>
             <view class="jShoppingCartItem-btm-inf-icon">
               <view class="iconfont iconi"></view>
             </view>
@@ -439,12 +441,9 @@ export default {
       weekOptions: [],
       // 选择的远周次key
       choseWeekKeys: [''],
-      // 创建的次数
-      createdNum: 0
     };
   },
   created() {
-    this.createdNum++;
     this.setPageInf();
   },
   computed: {
@@ -684,8 +683,7 @@ export default {
   },
   watch: {
     versionPrice(val, oldVal) {
-      // h5只要是第一次创建，则一定渲染（下拉刷新的时候，组件重新创建，但是versionPrice值相同，但是specificationsList却在data里初始化为[]）
-      if (this.createdNum > 1 && JSON.stringify(val) !== JSON.stringify(oldVal)) {
+      if (JSON.stringify(val) !== JSON.stringify(oldVal)) {
         this.genSpecificationsList();
         this.setFollowState();
         this.genWeekOptions();
@@ -754,7 +752,7 @@ export default {
     },
     setPageInf() {
       this.genStockPickerOption();
-      this.genSpecificationsList();
+      // this.genSpecificationsList();
       this.setFollowState();
       this.genWeekOptions();
     },
